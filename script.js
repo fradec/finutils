@@ -14,6 +14,11 @@ document.querySelectorAll('input[name="rachat-type"]').forEach((radio) => radio.
     document.getElementById('partiel-fields').hidden = document.querySelector('input[name="rachat-type"]:checked').value !== 'partiel';
 }));
 
+// L'abattement (et le choix seul/couple qui en double le montant) ne concerne que les contrats de plus de 8 ans.
+document.getElementById('duration').addEventListener('change', (event) => {
+    document.getElementById('abattement-fields').hidden = event.target.value !== '8+';
+});
+
 document.getElementById('montant-retire').addEventListener('input', () => {
     const valeurRachat = parseFloat(document.getElementById('value-a').value) || 0;
     const montant = parseFloat(document.getElementById('montant-retire').value) || 0;
@@ -88,6 +93,6 @@ function calculate() {
 function resetForm() {
     document.getElementById('calculator-form').reset();
     document.getElementById('partiel-fields').hidden = true;
-    document.getElementById('result-integration').innerText = '';
-    document.getElementById('result-forfaitaire').innerText = '';
+    document.getElementById('abattement-fields').hidden = true;
+    calculate();
 }
