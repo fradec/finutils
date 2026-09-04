@@ -7,53 +7,58 @@
 </head>
 <body>
   <main>
-    <h1>🏠 Simulateur de crédit immobilier</h1>
-    <p>Renseignez vos paramètres pour estimer votre financement.</p>
+    <header class="page-header">
+      <h1>🏠 Simulateur de crédit immobilier</h1>
+      <p class="subtitle">Estimation rapide pour visualiser un scénario de financement.</p>
+    </header>
 
-    <!-- Ligne 1 : Prix | Apport -->
-    <div class="form-row">
-      <label>
-        Prix du bien (€)
-        <input type="number" id="price" min="0" step="1000">
-      </label>
-      <label>
-        Apport personnel (€)
-        <input type="number" id="downPayment" min="0" step="1000">
-      </label>
+    <div class="panel">
+      <div class="form-row">
+        <label>
+          <span class="label-title">Prix du bien (€)</span>
+          <input type="number" id="price" min="0" step="1000">
+          <small class="help-text" id="help-price"></small>
+        </label>
+        <label>
+          <span class="label-title">Apport personnel (€)</span>
+          <input type="number" id="downPayment" min="0" step="1000">
+          <small class="help-text" id="help-downPayment"></small>
+        </label>
+      </div>
+
+      <div class="form-row">
+        <label>
+          <span class="label-title">Type de bien</span>
+          <select id="isNew">
+            <option value="ancien">Ancien</option>
+            <option value="neuf">Neuf</option>
+          </select>
+          <small class="help-text" id="help-isNew"></small>
+        </label>
+        <label>
+          <span class="label-title">Travaux (€)</span>
+          <input type="number" id="works" min="0" step="1000">
+          <small class="help-text" id="help-works"></small>
+        </label>
+      </div>
+
+      <div class="form-row">
+        <label>
+          <span class="label-title">Durée (années)</span>
+          <input type="number" id="duration" min="1" max="35">
+          <small class="help-text" id="help-duration"></small>
+        </label>
+        <label>
+          <span class="label-title">Taux d'intérêt annuel (%)</span>
+          <input type="number" id="rate" step="0.05" min="0">
+          <small class="help-text" id="help-rate"></small>
+        </label>
+      </div>
+
+      <p id="warning" class="warning" aria-live="polite"></p>
     </div>
 
-    <!-- Ligne 2 : Type | Travaux -->
-    <div class="form-row">
-      <label>
-        Type de bien
-        <select id="isNew">
-          <option value="ancien">Ancien</option>
-          <option value="neuf">Neuf</option>
-        </select>
-      </label>
-      <label>
-        Travaux (€)
-        <input type="number" id="works" min="0" step="1000">
-      </label>
-    </div>
-
-    <!-- Ligne 3 : Durée | Taux -->
-    <div class="form-row">
-      <label>
-        Durée (années)
-        <input type="number" id="duration" min="1" max="25">
-      </label>
-      <label>
-        Taux d'intérêt annuel (%)
-        <input type="number" id="rate" step="0.05" min="0">
-      </label>
-    </div>
-
-    <p id="warning" class="warning"></p>
-
-    <hr>
-
-    <div id="results">
+    <div id="results" class="results">
       <h2>Résultats</h2>
       <ul>
         <li><b>Frais de notaire estimés :</b> <span id="notaryFees"></span></li>
@@ -62,9 +67,10 @@
         <li><b>Coût total du crédit :</b> <span id="totalCreditCost"></span></li>
         <li><b>Coût total de l'opération :</b> <span id="totalCost"></span></li>
       </ul>
+      <p class="assumption-note">Simulation simplifiée, hors assurance emprunteur et hors frais annexes éventuels.</p>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
   </main>
 </body>
 </html>

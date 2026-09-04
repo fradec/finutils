@@ -1,50 +1,67 @@
-// Initial values
-let price = 300000;
-let isNew = false;
-let works = 0;
-let downPayment = 30000;
-let rate = 4.5;
-let duration = 20;
+import {
+  DEFAULT_VALUES,
+  HELP_TEXT,
+  NOTARY_FEE_RATE,
+} from './loan-defaults.js';
+
 let hasEditedDownPayment = false;
 
-// DOM Elements
-const priceInput = document.getElementById("price");
-const downPaymentInput = document.getElementById("downPayment");
-const isNewSelect = document.getElementById("isNew");
-const worksInput = document.getElementById("works");
-const rateInput = document.getElementById("rate");
-const durationInput = document.getElementById("duration");
-const warningEl = document.getElementById("warning");
-const notaryFeesEl = document.getElementById("notaryFees");
-const loanAmountEl = document.getElementById("loanAmount");
-const monthlyPaymentEl = document.getElementById("monthlyPayment");
-const totalCreditCostEl = document.getElementById("totalCreditCost");
-const totalCostEl = document.getElementById("totalCost");
+const priceInput = document.getElementById('price');
+const downPaymentInput = document.getElementById('downPayment');
+const isNewSelect = document.getElementById('isNew');
+const worksInput = document.getElementById('works');
+const rateInput = document.getElementById('rate');
+const durationInput = document.getElementById('duration');
+const warningEl = document.getElementById('warning');
+const notaryFeesEl = document.getElementById('notaryFees');
+const loanAmountEl = document.getElementById('loanAmount');
+const monthlyPaymentEl = document.getElementById('monthlyPayment');
+const totalCreditCostEl = document.getElementById('totalCreditCost');
+const totalCostEl = document.getElementById('totalCost');
 
-// Format currency
-function formatCurrency(v) {
-  return v.toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
+const helpFields = {
+  price: document.getElementById('help-price'),
+  downPayment: document.getElementById('help-downPayment'),
+  isNew: document.getElementById('help-isNew'),
+  works: document.getElementById('help-works'),
+  rate: document.getElementById('help-rate'),
+  duration: document.getElementById('help-duration'),
+};
+
+function formatCurrency(value) {
+  return value.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
 }
 
-// Calculate & update results
-function calculate() {
-  // sanitize
-  const sanitizedPrice = Math.max(+priceInput.value || 0, 0);
-  const sanitizedWorks = Math.max(+worksInput.value || 0, 0);
-  const sanitizedDownPayment = Math.max(+downPaymentInput.value || 0, 0);
-  const sanitizedRate = Math.max(+rateInput.value || 0, 0);
-  const sanitizedDuration = Math.min(Math.max(+durationInput.value || 1, 1), 25);
+function setHelpText() {
+  Object.entries(HELP_TEXT).forEach(([key, text]) => {
+    if (helpFields[key]) {
+      helpFields[key].textContent = text;
+    }
+  });
+}
 
-  const notaryFeesRate = isNewSelect.value === "neuf" ? 0.03 : 0.08;
+function calculate() {
+  const sanitizedPrice = Math.max(Number(priceInput.value) || 0, 0);
+  const sanitizedWorks = Math.max(Number(worksInput.value) || 0, 0);
+  const sanitizedDownPayment = Math.max(Number(downPaymentInput.value) || 0, 0);
+  const sanitizedRate = Math.max(Number(rateInput.value) || 0, 0);
+  const sanitizedDuration = Math.min(Math.max(Number(durationInput.value) || 1, 1), 35);
+
+  const notaryFeesRate = NOTARY_FEE_RATE[isNewSelect.value] ?? NOTARY_FEE_RATE.ancien;
   const notaryFees = sanitizedPrice * notaryFeesRate;
   const totalCostValue = sanitizedPrice + notaryFees + sanitizedWorks;
   const loanAmount = Math.max(totalCostValue - sanitizedDownPayment, 0);
+
   const monthlyRate = sanitizedRate / 100 / 12;
   const totalMonths = sanitizedDuration * 12;
-  const monthlyPayment = loanAmount > 0 ? (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -totalMonths)) : 0;
+  const monthlyPayment = loanAmount > 0 && monthlyRate > 0
+    ? (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -totalMonths))
+    : loanAmount / totalMonths;
   const totalCreditCost = monthlyPayment * totalMonths - loanAmount;
 
-  warningEl.textContent = sanitizedDownPayment > totalCostValue ? "⚠️ L'apport dépasse le coût total de l'opération !" : "";
+  warningEl.textContent = sanitizedDownPayment > totalCostValue
+    ? "⚠️ L'apport dépasse le coût total de l'opération. Vous pouvez le réduire pour obtenir un scénario plus réaliste."
+    : '';
 
   notaryFeesEl.textContent = formatCurrency(notaryFees);
   loanAmountEl.textContent = formatCurrency(loanAmount);
@@ -53,28 +70,29 @@ function calculate() {
   totalCostEl.textContent = formatCurrency(totalCostValue + totalCreditCost);
 }
 
-// Auto-fill 10% downPayment if not edited
-downPaymentInput.addEventListener("input", () => {
+downPaymentInput.addEventListener('input', () => {
   hasEditedDownPayment = true;
+  calculate();
 });
-priceInput.addEventListener("input", () => {
+
+priceInput.addEventListener('input', () => {
   if (!hasEditedDownPayment) {
-    downPaymentInput.value = Math.round(+priceInput.value * 0.1);
+    downPaymentInput.value = Math.round(Number(priceInput.value) * 0.1 || 0);
   }
   calculate();
 });
 
-// Other inputs
-[worksInput, rateInput, durationInput, isNewSelect, downPaymentInput].forEach(el => {
-  el.addEventListener("input", calculate);
+[worksInput, rateInput, durationInput, isNewSelect, downPaymentInput].forEach((el) => {
+  el.addEventListener('input', calculate);
 });
 
-// Initialize values
-priceInput.value = price;
-downPaymentInput.value = downPayment;
-worksInput.value = works;
-rateInput.value = rate;
-durationInput.value = duration;
-isNewSelect.value = isNew ? "neuf" : "ancien";
+priceInput.value = DEFAULT_VALUES.price;
+downPaymentInput.value = DEFAULT_VALUES.downPayment;
+worksInput.value = DEFAULT_VALUES.works;
+rateInput.value = DEFAULT_VALUES.rate;
+durationInput.value = DEFAULT_VALUES.duration;
+isNewSelect.value = DEFAULT_VALUES.isNew;
+
+setHelpText();
 
 calculate();
