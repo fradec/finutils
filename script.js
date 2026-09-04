@@ -37,6 +37,33 @@ function calculate() {
   durationValue.value = `${sanitizedDuration} an${sanitizedDuration > 1 ? 's' : ''}`;
 
   const isNewValue = getSelectedIsNewValue();
+  const hasFinancingData = sanitizedPrice > 0
+    && downPaymentInput.value !== ''
+    && isNewValue !== null;
+  if (hasFinancingData) {
+    const notaryFeesRate = NOTARY_FEE_RATE[isNewValue] ?? NOTARY_FEE_RATE.ancien;
+    const notaryFees = sanitizedPrice * notaryFeesRate;
+    const totalCostValue = sanitizedPrice + notaryFees + sanitizedWorks;
+    const loanAmount = Math.max(totalCostValue - sanitizedDownPayment, 0);
+    const downPaymentRate = Math.round((sanitizedDownPayment / sanitizedPrice) * 100);
+
+    financingAmountInput.value = Math.round(loanAmount);
+    warningEl.className = 'warning';
+    if (sanitizedDownPayment > totalCostValue) {
+      warningEl.className = 'warning warning-danger';
+      warningEl.textContent = "L'apport dépasse le coût total de l'opération. Vous pouvez le réduire pour obtenir un scénario plus réaliste.";
+    } else if (downPaymentRate < 10) {
+      warningEl.className = 'warning warning-info';
+      warningEl.textContent = `Votre apport représente ${downPaymentRate}% du prix du bien. Il est préférable d'avoir au moins 10% d'apport.`;
+    } else {
+      warningEl.className = 'warning warning-success';
+      warningEl.textContent = `Votre apport représente ${downPaymentRate}% du prix du bien.`;
+    }
+  } else {
+    financingAmountInput.value = '';
+    warningEl.textContent = '';
+  }
+
   const hasEnoughData = sanitizedPrice > 0
     && downPaymentInput.value !== ''
     && sanitizedDownPayment >= 0
@@ -50,8 +77,6 @@ function calculate() {
   resultsSection.hidden = !hasEnoughData;
   resultsPlaceholder.hidden = hasEnoughData;
   if (!hasEnoughData) {
-    warningEl.textContent = '';
-    financingAmountInput.value = '';
     return;
   }
 
@@ -59,8 +84,6 @@ function calculate() {
   const notaryFees = sanitizedPrice * notaryFeesRate;
   const totalCostValue = sanitizedPrice + notaryFees + sanitizedWorks;
   const loanAmount = Math.max(totalCostValue - sanitizedDownPayment, 0);
-  const downPaymentRate = Math.round((sanitizedDownPayment / sanitizedPrice) * 100);
-  financingAmountInput.value = Math.round(loanAmount);
 
   const monthlyRate = sanitizedRate / 100 / 12;
   const totalMonths = sanitizedDuration * 12;
@@ -68,18 +91,6 @@ function calculate() {
     ? (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -totalMonths))
     : loanAmount / totalMonths;
   const totalCreditCost = monthlyPayment * totalMonths - loanAmount;
-
-  warningEl.className = 'warning';
-  if (sanitizedDownPayment > totalCostValue) {
-    warningEl.className = 'warning warning-danger';
-    warningEl.textContent = "L'apport dépasse le coût total de l'opération. Vous pouvez le réduire pour obtenir un scénario plus réaliste.";
-  } else if (downPaymentRate < 10) {
-    warningEl.className = 'warning warning-info';
-    warningEl.textContent = `Votre apport représente ${downPaymentRate}% du prix du bien. Il est préférable d'avoir au moins 10% d'apport.`;
-  } else {
-    warningEl.className = 'warning warning-success';
-    warningEl.textContent = `Votre apport représente ${downPaymentRate}% du prix du bien.`;
-  }
 
   notaryFeesEl.textContent = formatCurrency(notaryFees);
   resultDownPaymentEl.textContent = formatCurrency(sanitizedDownPayment);
