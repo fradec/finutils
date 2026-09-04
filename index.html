@@ -1,55 +1,125 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assurance Vie Calculator</title>
+    <title>Calculateur de fiscalité - Assurance Vie</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Assurance Vie Calculator</h1>
-        <button id="reset-button">Reset</button>
+        <header class="app-header">
+            <h1>Fiscalité d'un rachat d'assurance vie</h1>
+            <button id="reset-button">Réinitialiser</button>
+        </header>
         <form id="calculator-form">
-            <div class="form-group">
-                <label for="value-b">Montant total des primes versées :</label>
-                <input type="number" id="value-b" name="value-b">
-            </div>
-            <div class="form-group">
-                <label for="value-a">Valeur de rachat :</label>
-                <input type="number" id="value-a" name="value-a">
-            </div>
-            <div class="form-group">
-                <label for="profits">Montant des bénéfices :</label>
-                <input type="number" id="profits" name="profits" readonly>
-            </div>
-            <div class="form-group">
-                <label for="duration">Durée du contrat :</label>
-                <select id="duration" name="duration">
-                    <option value="0-4">De 0 à 4 ans</option>
-                    <option value="4-8">De 4 à 8 ans</option>
-                    <option value="8+">Au-delà de 8 ans</option>
-                </select>
-                <label for="before-sep-2017">Contrat débuté avant le 27 septembre 2017 :</label>
-                <input type="checkbox" id="before-sep-2017" name="before-sep-2017">
-            </div>
-            <div class="form-group">
-                <label for="tmi">TMI (Taux Marginal d'Imposition) :</label>
-                <select id="tmi" name="tmi">
-                    <option value="0">0%</option>
-                    <option value="11">11%</option>
-                    <option value="30">30%</option>
-                    <option value="41">41%</option>
-                    <option value="45">45%</option>
-                </select>
-            </div>
+            <fieldset>
+                <legend>Contrat</legend>
+                <div class="form-group">
+                    <label for="value-b">Montant total des primes versées :</label>
+                    <input type="number" id="value-b" name="value-b" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="value-a">Valeur de rachat totale du contrat :</label>
+                    <input type="number" id="value-a" name="value-a" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="profits">Bénéfices imposables sur ce rachat :</label>
+                    <input type="number" id="profits" name="profits" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="date-souscription">Date de souscription du contrat (optionnel) :</label>
+                    <input type="date" id="date-souscription" name="date-souscription" max="">
+                </div>
+                <div class="form-group">
+                    <label for="duration">Durée du contrat :</label>
+                    <select id="duration" name="duration">
+                        <option value="0-4">De 0 à 4 ans</option>
+                        <option value="4-8">De 4 à 8 ans</option>
+                        <option value="8+">Au-delà de 8 ans</option>
+                    </select>
+                    <p class="auto-note" id="duration-auto-note"></p>
+                </div>
+                <div class="form-group checkbox-group">
+                    <label for="before-sep-2017">
+                        <input type="checkbox" id="before-sep-2017" name="before-sep-2017">
+                        Primes versées avant le 27 septembre 2017
+                    </label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Rachat</legend>
+                <div class="form-group radio-group">
+                    <label><input type="radio" name="rachat-type" value="total" checked> Rachat total</label>
+                    <label><input type="radio" name="rachat-type" value="partiel"> Rachat partiel</label>
+                </div>
+                <div class="form-group" id="partiel-fields" hidden>
+                    <label for="montant-retire">Montant retiré :</label>
+                    <input type="number" id="montant-retire" min="0" step="0.01">
+                    <label for="pourcentage-retire">ou pourcentage du contrat retiré (%) :</label>
+                    <input type="number" id="pourcentage-retire" min="0" max="100" step="0.1">
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Votre situation</legend>
+                <div class="form-group" id="abattement-fields" hidden>
+                    <div class="radio-group">
+                        <label><input type="radio" name="situation" value="seul" checked> Seul(e)</label>
+                        <label><input type="radio" name="situation" value="couple"> En couple (imposition commune)</label>
+                    </div>
+                    <p class="abattement-note">Au-delà de 8 ans, un abattement annuel de 4 600 € (9 200 € en couple) réduit les gains soumis à l'impôt sur le revenu, avant application du taux.</p>
+                </div>
+                <div class="form-group">
+                    <label for="tmi">TMI (Taux Marginal d'Imposition) :</label>
+                    <select id="tmi" name="tmi">
+                        <option value="0">0%</option>
+                        <option value="11">11%</option>
+                        <option value="30">30%</option>
+                        <option value="41">41%</option>
+                        <option value="45">45%</option>
+                    </select>
+                </div>
+                <div class="form-group checkbox-group">
+                    <label for="exoneration">
+                        <input type="checkbox" id="exoneration" name="exoneration">
+                        Cas d'exonération d'impôt sur le revenu (licenciement, invalidité, mise à la retraite anticipée, liquidation judiciaire)
+                    </label>
+                </div>
+                <p class="legal-link"><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F22414" target="_blank" rel="noopener">Référence légale : service-public.fr</a></p>
+            </fieldset>
         </form>
-        <div class="results">
+        <p class="results-placeholder" id="results-placeholder">Renseignez le contrat ci-dessus pour voir apparaître les résultats.</p>
+        <div class="results" id="results-section" hidden>
             <h2>Résultats</h2>
-            <div id="result-integration"></div>
-            <div id="result-forfaitaire"></div>
+            <table class="results-table" id="results-table">
+                <thead>
+                    <tr>
+                        <th>Scénario</th>
+                        <th>Taxe</th>
+                        <th>Net perçu</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id="row-integration">
+                        <td>Barème progressif (IR)</td>
+                        <td id="tax-integration"></td>
+                        <td id="net-integration"></td>
+                        <td id="badge-integration"></td>
+                    </tr>
+                    <tr id="row-forfaitaire">
+                        <td>Prélèvement forfaitaire</td>
+                        <td id="tax-forfaitaire"></td>
+                        <td id="net-forfaitaire"></td>
+                        <td id="badge-forfaitaire"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="formula-note">Taxe = (gains − abattement éventuel) × taux d'imposition + gains × 17,2 % de prélèvements sociaux.</p>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>
