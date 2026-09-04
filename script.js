@@ -46,12 +46,22 @@ document.getElementById('date-souscription').addEventListener('input', (event) =
 document.getElementById('montant-retire').addEventListener('input', () => {
     const valeurRachat = parseFloat(document.getElementById('value-a').value) || 0;
     const montant = parseFloat(document.getElementById('montant-retire').value) || 0;
-    document.getElementById('pourcentage-retire').value = valeurRachat > 0 ? ((montant / valeurRachat) * 100).toFixed(1) : '';
+    // Arrondi au palier de 0,5 % pour rester compatible avec le pas du champ pourcentage.
+    const pourcentage = valeurRachat > 0 ? Math.min(100, Math.round((montant / valeurRachat) * 200) / 2) : 0;
+    document.getElementById('pourcentage-retire').value = pourcentage > 0 ? pourcentage : '';
 });
 
-document.getElementById('pourcentage-retire').addEventListener('input', () => {
+document.getElementById('pourcentage-retire').addEventListener('input', (event) => {
     const valeurRachat = parseFloat(document.getElementById('value-a').value) || 0;
-    const pourcentage = parseFloat(document.getElementById('pourcentage-retire').value) || 0;
+    const saisie = parseFloat(event.target.value);
+    if (Number.isNaN(saisie)) {
+        document.getElementById('montant-retire').value = '';
+        return;
+    }
+    const pourcentage = Math.min(100, Math.max(1, saisie));
+    if (pourcentage !== saisie) {
+        event.target.value = pourcentage;
+    }
     document.getElementById('montant-retire').value = ((pourcentage / 100) * valeurRachat).toFixed(2);
 });
 
