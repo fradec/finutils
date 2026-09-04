@@ -39,7 +39,6 @@
                         Primes versées avant le 27 septembre 2017
                     </label>
                 </div>
-                <p class="legal-link"><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F22414" target="_blank" rel="noopener">Référence légale (service-public.fr)</a></p>
             </fieldset>
 
             <fieldset>
@@ -78,14 +77,37 @@
                         Cas d'exonération d'impôt sur le revenu (licenciement, invalidité, mise à la retraite anticipée, liquidation judiciaire)
                     </label>
                 </div>
-                <p class="legal-link"><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F22414" target="_blank" rel="noopener">Référence légale (service-public.fr)</a></p>
+                <p class="abattement-note">Au-delà de 8 ans, un abattement annuel de 4 600 € (9 200 € en couple) réduit les gains soumis à l'impôt sur le revenu, avant application du taux.</p>
+                <p class="legal-link"><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F22414" target="_blank" rel="noopener">Référence légale : service-public.fr</a></p>
             </fieldset>
         </form>
         <div class="results">
             <h2>Résultats</h2>
-            <div id="result-integration"></div>
-            <div id="result-forfaitaire"></div>
-            <div id="result-net" class="result-net"></div>
+            <table class="results-table" id="results-table">
+                <thead>
+                    <tr>
+                        <th>Scénario</th>
+                        <th>Taxe</th>
+                        <th>Net perçu</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id="row-integration">
+                        <td>Barème progressif (IR)</td>
+                        <td id="tax-integration"></td>
+                        <td id="net-integration"></td>
+                        <td id="badge-integration"></td>
+                    </tr>
+                    <tr id="row-forfaitaire">
+                        <td>Prélèvement forfaitaire</td>
+                        <td id="tax-forfaitaire"></td>
+                        <td id="net-forfaitaire"></td>
+                        <td id="badge-forfaitaire"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="formula-note">Taxe = (gains − abattement éventuel) × taux d'imposition + gains × 17,2 % de prélèvements sociaux.</p>
         </div>
     </div>
     <script type="module" src="script.js"></script>

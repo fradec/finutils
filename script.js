@@ -41,19 +41,23 @@ function calculate() {
 
     document.getElementById('profits').value = gains.toFixed(2);
 
-    const resultIntegrationEl = document.getElementById('result-integration');
-    const resultForfaitaireEl = document.getElementById('result-forfaitaire');
-    const resultNetEl = document.getElementById('result-net');
-    resultIntegrationEl.classList.remove('best-option');
-    resultForfaitaireEl.classList.remove('best-option');
+    const rowIntegration = document.getElementById('row-integration');
+    const rowForfaitaire = document.getElementById('row-forfaitaire');
+    rowIntegration.classList.remove('best-option');
+    rowForfaitaire.classList.remove('best-option');
+    rowIntegration.querySelector('td').innerText = 'Barème progressif (IR)';
+    document.getElementById('badge-integration').innerText = '';
+    document.getElementById('badge-forfaitaire').innerText = '';
+    rowForfaitaire.hidden = false;
 
     // Prélèvements sociaux : dus sur la totalité des gains, sans abattement, même en cas d'exonération d'IR.
     const prelevementsSociaux = gains * TAUX_PRELEVEMENTS_SOCIAUX;
 
     if (exonere) {
-        resultIntegrationEl.innerText = `Produits exonérés d'impôt sur le revenu. Prélèvements sociaux dus : ${formatEUR(prelevementsSociaux)}`;
-        resultForfaitaireEl.innerText = '';
-        resultNetEl.innerText = `Montant net perçu : ${formatEUR(montantRetire - prelevementsSociaux)}`;
+        rowIntegration.querySelector('td').innerText = "Exonération d'IR (prélèvements sociaux seuls)";
+        document.getElementById('tax-integration').innerText = formatEUR(prelevementsSociaux);
+        document.getElementById('net-integration').innerText = formatEUR(montantRetire - prelevementsSociaux);
+        rowForfaitaire.hidden = true;
         return;
     }
 
@@ -70,10 +74,15 @@ function calculate() {
     const integrationResult = baseImposable * (tmi / 100) + prelevementsSociaux;
     const forfaitaireResult = baseImposable * tauxForfaitaire + prelevementsSociaux;
 
-    resultIntegrationEl.innerText = `Taxe via intégration des produits à l'impôt sur le revenu : ${formatEUR(integrationResult)}`;
-    resultForfaitaireEl.innerText = `Taxe via prélèvement forfaitaire : ${formatEUR(forfaitaireResult)}`;
-    (integrationResult <= forfaitaireResult ? resultIntegrationEl : resultForfaitaireEl).classList.add('best-option');
-    resultNetEl.innerText = `Montant net perçu (meilleure option) : ${formatEUR(montantRetire - Math.min(integrationResult, forfaitaireResult))}`;
+    document.getElementById('tax-integration').innerText = formatEUR(integrationResult);
+    document.getElementById('net-integration').innerText = formatEUR(montantRetire - integrationResult);
+    document.getElementById('tax-forfaitaire').innerText = formatEUR(forfaitaireResult);
+    document.getElementById('net-forfaitaire').innerText = formatEUR(montantRetire - forfaitaireResult);
+
+    const meilleureLigne = integrationResult <= forfaitaireResult ? rowIntegration : rowForfaitaire;
+    const badgeMeilleur = meilleureLigne === rowIntegration ? 'badge-integration' : 'badge-forfaitaire';
+    meilleureLigne.classList.add('best-option');
+    document.getElementById(badgeMeilleur).innerText = '✅ À privilégier';
 }
 
 function resetForm() {
