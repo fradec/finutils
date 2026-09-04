@@ -22,7 +22,7 @@
                     <input type="number" id="value-a" name="value-a" min="0" step="0.01">
                 </div>
                 <div class="form-group">
-                    <label for="profits">Montant des bénéfices :</label>
+                    <label for="profits">Bénéfices imposables sur ce rachat :</label>
                     <input type="number" id="profits" name="profits" readonly>
                 </div>
                 <div class="form-group">
@@ -40,6 +40,20 @@
                     </label>
                 </div>
                 <p class="legal-link"><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F22414" target="_blank" rel="noopener">Référence légale (service-public.fr)</a></p>
+            </fieldset>
+
+            <fieldset>
+                <legend>Rachat</legend>
+                <div class="form-group radio-group">
+                    <label><input type="radio" name="rachat-type" value="total" checked> Rachat total</label>
+                    <label><input type="radio" name="rachat-type" value="partiel"> Rachat partiel</label>
+                </div>
+                <div class="form-group" id="partiel-fields" hidden>
+                    <label for="montant-retire">Montant retiré :</label>
+                    <input type="number" id="montant-retire" min="0" step="0.01">
+                    <label for="pourcentage-retire">ou pourcentage du contrat retiré (%) :</label>
+                    <input type="number" id="pourcentage-retire" min="0" max="100" step="0.1">
+                </div>
             </fieldset>
 
             <fieldset>

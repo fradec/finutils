@@ -8,10 +8,29 @@ import {
 document.getElementById('calculator-form').addEventListener('input', calculate);
 document.getElementById('reset-button').addEventListener('click', resetForm);
 
+document.querySelectorAll('input[name="rachat-type"]').forEach((radio) => radio.addEventListener('change', () => {
+    document.getElementById('partiel-fields').hidden = document.querySelector('input[name="rachat-type"]:checked').value !== 'partiel';
+}));
+
+document.getElementById('montant-retire').addEventListener('input', () => {
+    const valeurRachat = parseFloat(document.getElementById('value-a').value) || 0;
+    const montant = parseFloat(document.getElementById('montant-retire').value) || 0;
+    document.getElementById('pourcentage-retire').value = valeurRachat > 0 ? ((montant / valeurRachat) * 100).toFixed(1) : '';
+});
+
+document.getElementById('pourcentage-retire').addEventListener('input', () => {
+    const valeurRachat = parseFloat(document.getElementById('value-a').value) || 0;
+    const pourcentage = parseFloat(document.getElementById('pourcentage-retire').value) || 0;
+    document.getElementById('montant-retire').value = ((pourcentage / 100) * valeurRachat).toFixed(2);
+});
+
 function calculate() {
     const primesVersees = parseFloat(document.getElementById('value-b').value) || 0;
     const valeurRachat = parseFloat(document.getElementById('value-a').value) || 0;
-    const gains = Math.max(0, valeurRachat - primesVersees);
+    const rachatPartiel = document.querySelector('input[name="rachat-type"]:checked').value === 'partiel';
+    const montantRetire = rachatPartiel ? (parseFloat(document.getElementById('montant-retire').value) || 0) : valeurRachat;
+    // Quote-part de gains afférente au montant retiré (art. 125-0 A CGI), ramenée à la valeur de rachat totale.
+    const gains = valeurRachat > 0 ? Math.max(0, montantRetire * (valeurRachat - primesVersees) / valeurRachat) : 0;
     const duration = document.getElementById('duration').value;
     const avantReforme = document.getElementById('before-sep-2017').checked;
     const tmi = parseFloat(document.getElementById('tmi').value) || 0;
@@ -48,6 +67,7 @@ function calculate() {
 
 function resetForm() {
     document.getElementById('calculator-form').reset();
+    document.getElementById('partiel-fields').hidden = true;
     document.getElementById('result-integration').innerText = '';
     document.getElementById('result-forfaitaire').innerText = '';
 }
