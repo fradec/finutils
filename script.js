@@ -1,5 +1,7 @@
 import { NOTARY_FEE_RATE } from './loan-defaults.js';
 
+let hasEditedDownPayment = false;
+
 const priceInput = document.getElementById('price');
 const downPaymentInput = document.getElementById('downPayment');
 const isNewInputs = document.querySelectorAll('input[name="isNew"]');
@@ -71,7 +73,19 @@ function calculate() {
   totalCostEl.textContent = formatCurrency(totalCostValue + totalCreditCost);
 }
 
-[priceInput, worksInput, rateInput, durationInput, downPaymentInput].forEach((el) => {
+downPaymentInput.addEventListener('input', () => {
+  hasEditedDownPayment = true;
+  calculate();
+});
+
+priceInput.addEventListener('input', () => {
+  if (!hasEditedDownPayment) {
+    downPaymentInput.value = Math.round(Number(priceInput.value) * 0.1 || 0);
+  }
+  calculate();
+});
+
+[worksInput, rateInput, durationInput].forEach((el) => {
   el.addEventListener('input', calculate);
 });
 
@@ -80,6 +94,7 @@ isNewInputs.forEach((input) => {
 });
 
 resetButton.addEventListener('click', () => {
+  hasEditedDownPayment = false;
   document.getElementById('loan-form').reset();
   calculate();
 });
