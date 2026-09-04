@@ -26,12 +26,17 @@
                     <input type="number" id="profits" name="profits" readonly>
                 </div>
                 <div class="form-group">
+                    <label for="date-souscription">Date de souscription du contrat (optionnel) :</label>
+                    <input type="date" id="date-souscription" name="date-souscription" max="">
+                </div>
+                <div class="form-group">
                     <label for="duration">Durée du contrat :</label>
                     <select id="duration" name="duration">
                         <option value="0-4">De 0 à 4 ans</option>
                         <option value="4-8">De 4 à 8 ans</option>
                         <option value="8+">Au-delà de 8 ans</option>
                     </select>
+                    <p class="auto-note" id="duration-auto-note"></p>
                 </div>
                 <div class="form-group checkbox-group">
                     <label for="before-sep-2017">

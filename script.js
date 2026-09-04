@@ -7,6 +7,8 @@ import {
 
 const formatEUR = (montant) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(montant);
 
+document.getElementById('date-souscription').max = new Date().toISOString().split('T')[0];
+
 document.getElementById('calculator-form').addEventListener('input', calculate);
 document.getElementById('reset-button').addEventListener('click', resetForm);
 
@@ -15,8 +17,25 @@ document.querySelectorAll('input[name="rachat-type"]').forEach((radio) => radio.
 }));
 
 // L'abattement (et le choix seul/couple qui en double le montant) ne concerne que les contrats de plus de 8 ans.
-document.getElementById('duration').addEventListener('change', (event) => {
-    document.getElementById('abattement-fields').hidden = event.target.value !== '8+';
+const durationSelect = document.getElementById('duration');
+function updateAbattementVisibility() {
+    document.getElementById('abattement-fields').hidden = durationSelect.value !== '8+';
+}
+durationSelect.addEventListener('change', updateAbattementVisibility);
+
+// Date de souscription (optionnelle) : calcule et verrouille automatiquement la tranche de durée.
+document.getElementById('date-souscription').addEventListener('input', (event) => {
+    const autoNoteEl = document.getElementById('duration-auto-note');
+    if (!event.target.value) {
+        durationSelect.disabled = false;
+        autoNoteEl.innerText = '';
+        return;
+    }
+    const annees = (Date.now() - new Date(event.target.value).getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+    durationSelect.value = annees < 4 ? '0-4' : annees < 8 ? '4-8' : '8+';
+    durationSelect.disabled = true;
+    autoNoteEl.innerText = `Durée calculée automatiquement : ${annees.toFixed(1)} an(s)`;
+    updateAbattementVisibility();
 });
 
 document.getElementById('montant-retire').addEventListener('input', () => {
@@ -94,5 +113,7 @@ function resetForm() {
     document.getElementById('calculator-form').reset();
     document.getElementById('partiel-fields').hidden = true;
     document.getElementById('abattement-fields').hidden = true;
+    durationSelect.disabled = false;
+    document.getElementById('duration-auto-note').innerText = '';
     calculate();
 }
