@@ -5,7 +5,7 @@ import {
     TAUX_FORFAITAIRE,
 } from './fiscal-rules.js';
 
-const formatEUR = (montant) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(montant);
+const formatEUR = (montant) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(montant);
 
 document.getElementById('date-souscription').max = new Date().toISOString().split('T')[0];
 
@@ -63,11 +63,12 @@ function calculate() {
 
     const resultsSection = document.getElementById('results-section');
     const resultsPlaceholder = document.getElementById('results-placeholder');
+    const profitsInfo = document.getElementById('profits-info');
     const hasEnoughData = valeurRachat > 0 && montantRetire > 0;
     resultsSection.hidden = !hasEnoughData;
     resultsPlaceholder.hidden = hasEnoughData;
     if (!hasEnoughData) {
-        document.getElementById('profits').value = '';
+        profitsInfo.hidden = true;
         return;
     }
 
@@ -79,7 +80,15 @@ function calculate() {
     const situation = document.querySelector('input[name="situation"]:checked').value;
     const exonere = document.getElementById('exoneration').checked;
 
-    document.getElementById('profits').value = gains.toFixed(2);
+    const plusValue = gains > 0;
+    // Une moins-value sur assurance vie n'ouvre droit à aucune imputation ni report (BOI-RPPM-RCM-20-10-20-50).
+    document.getElementById('profits-label').innerText = plusValue
+        ? 'Bénéfices imposables sur ce rachat :'
+        : "Ce rachat ne dégage aucune plus-value : il n'est donc pas imposable. La perte constatée n'est ni imputable sur vos autres revenus ni reportable.";
+    document.getElementById('profits-value').innerText = plusValue ? formatEUR(gains) : '';
+    profitsInfo.classList.toggle('is-positive', plusValue);
+    profitsInfo.classList.toggle('is-negative', !plusValue);
+    profitsInfo.hidden = primesVersees <= 0;
 
     const rowIntegration = document.getElementById('row-integration');
     const rowForfaitaire = document.getElementById('row-forfaitaire');
