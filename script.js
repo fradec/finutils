@@ -7,6 +7,7 @@ const downPaymentInput = document.getElementById('downPayment');
 const isNewInputs = document.querySelectorAll('input[name="isNew"]');
 const worksInput = document.getElementById('works');
 const financingAmountInput = document.getElementById('financingAmount');
+const financingUnit = document.getElementById('financingUnit');
 const rateInput = document.getElementById('rate');
 const durationInput = document.getElementById('duration');
 const durationValue = document.getElementById('durationValue');
@@ -28,6 +29,10 @@ const totalCostEl = document.getElementById('totalCost');
 
 function formatCurrency(value) {
   return value.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+}
+
+function formatAmount(value) {
+  return value.toLocaleString('fr-FR', { maximumFractionDigits: 0 });
 }
 
 function getSelectedIsNewValue() {
@@ -54,7 +59,8 @@ function calculate() {
     const loanAmount = Math.max(totalCostValue - sanitizedDownPayment, 0);
     const downPaymentRate = Math.round((sanitizedDownPayment / sanitizedPrice) * 100);
 
-    financingAmountInput.value = Math.round(loanAmount);
+    financingAmountInput.value = formatAmount(loanAmount);
+    financingUnit.hidden = false;
     notaryFeesLabelEl.textContent = `Frais de notaire estimés (${Math.round(notaryFeesRate * 100)}%)`;
     resultDownPaymentLabelEl.textContent = `Apport (${downPaymentRate}%)`;
     warningEl.className = 'warning';
@@ -70,6 +76,7 @@ function calculate() {
     }
   } else {
     financingAmountInput.value = '';
+    financingUnit.hidden = true;
     warningEl.textContent = '';
   }
 
