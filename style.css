@@ -198,6 +198,25 @@ input[type="number"]:focus, input[type="date"]:focus, select:focus {
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
+.input-with-suffix {
+    position: relative;
+    width: 100%;
+}
+
+.input-with-suffix input {
+    padding-right: 34px;
+}
+
+.input-with-suffix span {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+    font-size: 14px;
+    pointer-events: none;
+}
+
 /* Valeur calculée automatiquement, présentée comme une information et non comme un champ de saisie. */
 .info-note {
     margin: 0 0 14px;

@@ -17,11 +17,17 @@
                 <legend>Contrat</legend>
                 <div class="form-group">
                     <label for="value-b">Montant total des primes versées :</label>
-                    <input type="number" id="value-b" name="value-b" min="0" step="0.01">
+                    <div class="input-with-suffix">
+                        <input type="number" id="value-b" name="value-b" min="0" step="0.01">
+                        <span aria-hidden="true">€</span>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="value-a">Valeur de rachat totale du contrat :</label>
-                    <input type="number" id="value-a" name="value-a" min="0" step="0.01">
+                    <div class="input-with-suffix">
+                        <input type="number" id="value-a" name="value-a" min="0" step="0.01">
+                        <span aria-hidden="true">€</span>
+                    </div>
                 </div>
                 <p class="info-note" id="profits-info" aria-live="polite" hidden>
                     <span id="profits-label"></span> <strong id="profits-value"></strong>
@@ -55,9 +61,15 @@
                 </div>
                 <div class="form-group" id="partiel-fields" hidden>
                     <label for="montant-retire">Montant retiré :</label>
-                    <input type="number" id="montant-retire" min="0" step="0.01">
-                    <label for="pourcentage-retire">ou pourcentage du contrat retiré (%) :</label>
-                    <input type="number" id="pourcentage-retire" min="0" max="100" step="0.1">
+                    <div class="input-with-suffix">
+                        <input type="number" id="montant-retire" min="0" step="0.01">
+                        <span aria-hidden="true">€</span>
+                    </div>
+                    <label for="pourcentage-retire">ou pourcentage du contrat retiré :</label>
+                    <div class="input-with-suffix">
+                        <input type="number" id="pourcentage-retire" min="0" max="100" step="0.1">
+                        <span aria-hidden="true">%</span>
+                    </div>
                 </div>
             </fieldset>
 
