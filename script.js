@@ -55,8 +55,19 @@ function calculate() {
     const valeurRachat = parseFloat(document.getElementById('value-a').value) || 0;
     const rachatPartiel = document.querySelector('input[name="rachat-type"]:checked').value === 'partiel';
     const montantRetire = rachatPartiel ? (parseFloat(document.getElementById('montant-retire').value) || 0) : valeurRachat;
+
+    const resultsSection = document.getElementById('results-section');
+    const resultsPlaceholder = document.getElementById('results-placeholder');
+    const hasEnoughData = valeurRachat > 0 && montantRetire > 0;
+    resultsSection.hidden = !hasEnoughData;
+    resultsPlaceholder.hidden = hasEnoughData;
+    if (!hasEnoughData) {
+        document.getElementById('profits').value = '';
+        return;
+    }
+
     // Quote-part de gains afférente au montant retiré (art. 125-0 A CGI), ramenée à la valeur de rachat totale.
-    const gains = valeurRachat > 0 ? Math.max(0, montantRetire * (valeurRachat - primesVersees) / valeurRachat) : 0;
+    const gains = Math.max(0, montantRetire * (valeurRachat - primesVersees) / valeurRachat);
     const duration = document.getElementById('duration').value;
     const avantReforme = document.getElementById('before-sep-2017').checked;
     const tmi = parseFloat(document.getElementById('tmi').value) || 0;
