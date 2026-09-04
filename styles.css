@@ -242,24 +242,33 @@ input[type="number"][readonly] {
 }
 
 .results-table th {
-    width: 62%;
+    width: auto;
     font-weight: 600;
     color: var(--color-text-muted);
+}
+
+.results-table .operator {
+    display: inline-block;
+    width: 20px;
+    color: var(--color-text-muted);
+    text-align: center;
+    font-weight: 400;
 }
 
 .results-table td {
     white-space: nowrap;
     font-weight: 600;
     color: var(--color-text);
+    text-align: right;
 }
 
-.results-table tbody tr:nth-child(odd) th,
-.results-table tbody tr:nth-child(odd) td {
+.results-table tbody tr.stripe-odd th,
+.results-table tbody tr.stripe-odd td {
     background-color: #f8fafc;
 }
 
-.results-table tbody tr:nth-child(even) th,
-.results-table tbody tr:nth-child(even) td {
+.results-table tbody tr.stripe-even th,
+.results-table tbody tr.stripe-even td {
     background-color: #ffffff;
 }
 
@@ -276,6 +285,19 @@ input[type="number"][readonly] {
     font-size: 12px;
     line-height: 1.5;
     color: var(--color-text-muted);
+}
+
+.monthly-summary {
+    margin: 14px 0 0;
+    padding: 12px 14px;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text);
+    font-size: 14px;
+}
+
+.monthly-summary strong {
+    color: var(--color-primary-dark);
+    font-size: 1.05rem;
 }
 
 .warning {

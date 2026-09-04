@@ -12,10 +12,17 @@ const durationInput = document.getElementById('duration');
 const durationValue = document.getElementById('durationValue');
 const warningEl = document.getElementById('warning');
 const resetButton = document.getElementById('reset-button');
+const resultPriceEl = document.getElementById('resultPrice');
+const resultWorksRow = document.getElementById('resultWorksRow');
+const resultWorksEl = document.getElementById('resultWorks');
 const notaryFeesEl = document.getElementById('notaryFees');
+const notaryFeesLabelEl = document.getElementById('notaryFeesLabel');
 const resultDownPaymentEl = document.getElementById('resultDownPayment');
+const resultDownPaymentLabelEl = document.getElementById('resultDownPaymentLabel');
 const loanAmountEl = document.getElementById('loanAmount');
 const monthlyPaymentEl = document.getElementById('monthlyPayment');
+const monthlyDurationEl = document.getElementById('monthlyDuration');
+const monthlyCountEl = document.getElementById('monthlyCount');
 const totalCreditCostEl = document.getElementById('totalCreditCost');
 const totalCostEl = document.getElementById('totalCost');
 
@@ -48,6 +55,8 @@ function calculate() {
     const downPaymentRate = Math.round((sanitizedDownPayment / sanitizedPrice) * 100);
 
     financingAmountInput.value = Math.round(loanAmount);
+    notaryFeesLabelEl.textContent = `Frais de notaire estimés (${Math.round(notaryFeesRate * 100)}%)`;
+    resultDownPaymentLabelEl.textContent = `Apport (${downPaymentRate}%)`;
     warningEl.className = 'warning';
     if (sanitizedDownPayment > totalCostValue) {
       warningEl.className = 'warning warning-danger';
@@ -93,9 +102,20 @@ function calculate() {
   const totalCreditCost = monthlyPayment * totalMonths - loanAmount;
 
   notaryFeesEl.textContent = formatCurrency(notaryFees);
+  resultPriceEl.textContent = formatCurrency(sanitizedPrice);
+  resultWorksRow.hidden = sanitizedWorks === 0;
+  resultWorksEl.textContent = formatCurrency(sanitizedWorks);
+  document.querySelectorAll('.results-table tbody tr').forEach((row) => {
+    row.classList.remove('stripe-odd', 'stripe-even');
+  });
+  [...document.querySelectorAll('.results-table tbody tr')]
+    .filter((row) => !row.hidden)
+    .forEach((row, index) => row.classList.add(index % 2 === 0 ? 'stripe-odd' : 'stripe-even'));
   resultDownPaymentEl.textContent = formatCurrency(sanitizedDownPayment);
   loanAmountEl.textContent = formatCurrency(loanAmount);
   monthlyPaymentEl.textContent = formatCurrency(monthlyPayment);
+  monthlyDurationEl.textContent = `${sanitizedDuration} an${sanitizedDuration > 1 ? 's' : ''}`;
+  monthlyCountEl.textContent = `${totalMonths} mois`;
   totalCreditCostEl.textContent = formatCurrency(totalCreditCost);
   totalCostEl.textContent = formatCurrency(totalCostValue + totalCreditCost);
 }

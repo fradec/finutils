@@ -79,31 +79,36 @@
       <table class="results-table">
         <tbody>
           <tr>
-            <th>Frais de notaire estimés</th>
-            <td id="notaryFees"></td>
+            <th>Prix du bien</th>
+            <td id="resultPrice"></td>
+          </tr>
+          <tr id="resultWorksRow" hidden>
+            <th>Coût des travaux</th>
+            <td><span class="operator">+</span><span id="resultWorks"></span></td>
           </tr>
           <tr>
-            <th>Apport</th>
-            <td id="resultDownPayment"></td>
+            <th><span id="notaryFeesLabel">Frais de notaire estimés</span></th>
+            <td><span class="operator">+</span><span id="notaryFees"></span></td>
+          </tr>
+          <tr>
+            <th><span id="resultDownPaymentLabel">Apport</span></th>
+            <td><span class="operator">−</span><span id="resultDownPayment"></span></td>
           </tr>
           <tr>
             <th>Coût à financer</th>
-            <td id="loanAmount"></td>
+            <td><span class="operator">=</span><span id="loanAmount"></span></td>
           </tr>
           <tr>
-            <th>Mensualité</th>
-            <td id="monthlyPayment"></td>
-          </tr>
-          <tr>
-            <th>Coût total du crédit</th>
-            <td id="totalCreditCost"></td>
+            <th>Coût du crédit</th>
+            <td><span class="operator">+</span><span id="totalCreditCost"></span></td>
           </tr>
           <tr>
             <th>Coût total de l'opération</th>
-            <td id="totalCost"></td>
+            <td><span class="operator">=</span><span id="totalCost"></span></td>
           </tr>
         </tbody>
       </table>
+      <p class="monthly-summary">Mensualité sur <span id="monthlyDuration">20 ans</span> : <strong id="monthlyPayment"></strong> / mois pendant <span id="monthlyCount">240 mois</span>.</p>
       <p class="assumption-note">Simulation simplifiée, hors assurance emprunteur et hors frais annexes éventuels.</p>
     </div>
   </div>
