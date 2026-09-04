@@ -5,6 +5,8 @@ import {
     TAUX_FORFAITAIRE,
 } from './fiscal-rules.js';
 
+const formatEUR = (montant) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(montant);
+
 document.getElementById('calculator-form').addEventListener('input', calculate);
 document.getElementById('reset-button').addEventListener('click', resetForm);
 
@@ -39,12 +41,19 @@ function calculate() {
 
     document.getElementById('profits').value = gains.toFixed(2);
 
+    const resultIntegrationEl = document.getElementById('result-integration');
+    const resultForfaitaireEl = document.getElementById('result-forfaitaire');
+    const resultNetEl = document.getElementById('result-net');
+    resultIntegrationEl.classList.remove('best-option');
+    resultForfaitaireEl.classList.remove('best-option');
+
     // Prélèvements sociaux : dus sur la totalité des gains, sans abattement, même en cas d'exonération d'IR.
     const prelevementsSociaux = gains * TAUX_PRELEVEMENTS_SOCIAUX;
 
     if (exonere) {
-        document.getElementById('result-integration').innerText = `Produits exonérés d'impôt sur le revenu. Prélèvements sociaux dus : ${prelevementsSociaux.toFixed(2)} €`;
-        document.getElementById('result-forfaitaire').innerText = '';
+        resultIntegrationEl.innerText = `Produits exonérés d'impôt sur le revenu. Prélèvements sociaux dus : ${formatEUR(prelevementsSociaux)}`;
+        resultForfaitaireEl.innerText = '';
+        resultNetEl.innerText = `Montant net perçu : ${formatEUR(montantRetire - prelevementsSociaux)}`;
         return;
     }
 
@@ -61,8 +70,10 @@ function calculate() {
     const integrationResult = baseImposable * (tmi / 100) + prelevementsSociaux;
     const forfaitaireResult = baseImposable * tauxForfaitaire + prelevementsSociaux;
 
-    document.getElementById('result-integration').innerText = `Taxe via intégration des produits à l'impôt sur le revenu : ${integrationResult.toFixed(2)} €`;
-    document.getElementById('result-forfaitaire').innerText = `Taxe via prélèvement forfaitaire : ${forfaitaireResult.toFixed(2)} €`;
+    resultIntegrationEl.innerText = `Taxe via intégration des produits à l'impôt sur le revenu : ${formatEUR(integrationResult)}`;
+    resultForfaitaireEl.innerText = `Taxe via prélèvement forfaitaire : ${formatEUR(forfaitaireResult)}`;
+    (integrationResult <= forfaitaireResult ? resultIntegrationEl : resultForfaitaireEl).classList.add('best-option');
+    resultNetEl.innerText = `Montant net perçu (meilleure option) : ${formatEUR(montantRetire - Math.min(integrationResult, forfaitaireResult))}`;
 }
 
 function resetForm() {
