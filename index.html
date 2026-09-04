@@ -2,69 +2,96 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Simulateur d'achat immobilier</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main>
-    <header class="page-header">
-      <h1>🏠 Simulateur de crédit immobilier</h1>
-      <p class="subtitle">Estimation rapide pour visualiser un scénario de financement.</p>
+  <div class="container">
+    <header class="app-header">
+      <h1>Simulateur de crédit immobilier</h1>
+      <button id="reset-button" type="button">Réinitialiser</button>
     </header>
 
-    <div class="panel">
-      <div class="form-row">
-        <label>
-          <span class="label-title">Prix du bien</span>
+    <form id="loan-form">
+      <fieldset>
+        <legend>Financement</legend>
+        <div class="form-group">
+          <label for="price">Prix du bien</label>
           <input type="number" id="price" min="0" step="1000">
-        </label>
-        <label>
-          <span class="label-title">Apport (généralement 10%)</span>
+        </div>
+        <div class="form-group">
+          <label for="downPayment">Apport (généralement 10%)</label>
           <input type="number" id="downPayment" min="0" step="1000">
-        </label>
-      </div>
+        </div>
+      </fieldset>
 
-      <div class="form-row">
-        <label>
-          <span class="label-title">Type de bien</span>
-          <select id="isNew">
-            <option value="ancien">Ancien</option>
-            <option value="neuf">Neuf</option>
-          </select>
-        </label>
-        <label>
-          <span class="label-title">Coût des travaux</span>
+      <fieldset>
+        <legend>Projet</legend>
+        <div class="form-group">
+          <label>Type de bien</label>
+          <div class="toggle-group" id="isNew-toggle">
+            <label>
+              <input type="radio" name="isNew" value="ancien" checked>
+              <span>Ancien</span>
+            </label>
+            <label>
+              <input type="radio" name="isNew" value="neuf">
+              <span>Neuf</span>
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="works">Coût des travaux</label>
           <input type="number" id="works" min="0" step="1000">
-        </label>
-      </div>
+        </div>
+      </fieldset>
 
-      <div class="form-row">
-        <label>
-          <span class="label-title">Durée du crédit</span>
+      <fieldset>
+        <legend>Crédit</legend>
+        <div class="form-group">
+          <label for="duration">Durée du crédit</label>
           <input type="number" id="duration" min="1" max="35">
-        </label>
-        <label>
-          <span class="label-title">Taux d'intérêt annuel</span>
+        </div>
+        <div class="form-group">
+          <label for="rate">Taux d'intérêt annuel</label>
           <input type="number" id="rate" step="0.05" min="0">
-        </label>
-      </div>
+        </div>
+      </fieldset>
 
       <p id="warning" class="warning" aria-live="polite"></p>
-    </div>
+    </form>
 
     <div id="results" class="results">
       <h2>Résultats</h2>
-      <ul>
-        <li><b>Frais de notaire estimés :</b> <span id="notaryFees"></span></li>
-        <li><b>Montant total emprunté :</b> <span id="loanAmount"></span></li>
-        <li><b>Mensualité :</b> <span id="monthlyPayment"></span></li>
-        <li><b>Coût total du crédit :</b> <span id="totalCreditCost"></span></li>
-        <li><b>Coût total de l'opération :</b> <span id="totalCost"></span></li>
-      </ul>
+      <table class="results-table">
+        <tbody>
+          <tr>
+            <th>Frais de notaire estimés</th>
+            <td id="notaryFees"></td>
+          </tr>
+          <tr>
+            <th>Montant total emprunté</th>
+            <td id="loanAmount"></td>
+          </tr>
+          <tr>
+            <th>Mensualité</th>
+            <td id="monthlyPayment"></td>
+          </tr>
+          <tr>
+            <th>Coût total du crédit</th>
+            <td id="totalCreditCost"></td>
+          </tr>
+          <tr>
+            <th>Coût total de l'opération</th>
+            <td id="totalCost"></td>
+          </tr>
+        </tbody>
+      </table>
       <p class="assumption-note">Simulation simplifiée, hors assurance emprunteur et hors frais annexes éventuels.</p>
     </div>
+  </div>
 
-    <script type="module" src="script.js"></script>
-  </main>
+  <script type="module" src="script.js"></script>
 </body>
 </html>

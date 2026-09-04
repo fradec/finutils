@@ -7,11 +7,12 @@ let hasEditedDownPayment = false;
 
 const priceInput = document.getElementById('price');
 const downPaymentInput = document.getElementById('downPayment');
-const isNewSelect = document.getElementById('isNew');
+const isNewInputs = document.querySelectorAll('input[name="isNew"]');
 const worksInput = document.getElementById('works');
 const rateInput = document.getElementById('rate');
 const durationInput = document.getElementById('duration');
 const warningEl = document.getElementById('warning');
+const resetButton = document.getElementById('reset-button');
 const notaryFeesEl = document.getElementById('notaryFees');
 const loanAmountEl = document.getElementById('loanAmount');
 const monthlyPaymentEl = document.getElementById('monthlyPayment');
@@ -22,6 +23,11 @@ function formatCurrency(value) {
   return value.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
 }
 
+function getSelectedIsNewValue() {
+  const selected = document.querySelector('input[name="isNew"]:checked');
+  return selected ? selected.value : DEFAULT_VALUES.isNew;
+}
+
 function calculate() {
   const sanitizedPrice = Math.max(Number(priceInput.value) || 0, 0);
   const sanitizedWorks = Math.max(Number(worksInput.value) || 0, 0);
@@ -29,7 +35,8 @@ function calculate() {
   const sanitizedRate = Math.max(Number(rateInput.value) || 0, 0);
   const sanitizedDuration = Math.min(Math.max(Number(durationInput.value) || 1, 1), 35);
 
-  const notaryFeesRate = NOTARY_FEE_RATE[isNewSelect.value] ?? NOTARY_FEE_RATE.ancien;
+  const isNewValue = getSelectedIsNewValue();
+  const notaryFeesRate = NOTARY_FEE_RATE[isNewValue] ?? NOTARY_FEE_RATE.ancien;
   const notaryFees = sanitizedPrice * notaryFeesRate;
   const totalCostValue = sanitizedPrice + notaryFees + sanitizedWorks;
   const loanAmount = Math.max(totalCostValue - sanitizedDownPayment, 0);
@@ -64,8 +71,25 @@ priceInput.addEventListener('input', () => {
   calculate();
 });
 
-[worksInput, rateInput, durationInput, isNewSelect, downPaymentInput].forEach((el) => {
+[worksInput, rateInput, durationInput, downPaymentInput].forEach((el) => {
   el.addEventListener('input', calculate);
+});
+
+isNewInputs.forEach((input) => {
+  input.addEventListener('change', calculate);
+});
+
+resetButton.addEventListener('click', () => {
+  priceInput.value = DEFAULT_VALUES.price;
+  downPaymentInput.value = DEFAULT_VALUES.downPayment;
+  worksInput.value = DEFAULT_VALUES.works;
+  rateInput.value = DEFAULT_VALUES.rate;
+  durationInput.value = DEFAULT_VALUES.duration;
+  const defaultIsNewInput = document.querySelector(`input[name="isNew"][value="${DEFAULT_VALUES.isNew}"]`);
+  if (defaultIsNewInput) {
+    defaultIsNewInput.checked = true;
+  }
+  calculate();
 });
 
 priceInput.value = DEFAULT_VALUES.price;
@@ -73,6 +97,9 @@ downPaymentInput.value = DEFAULT_VALUES.downPayment;
 worksInput.value = DEFAULT_VALUES.works;
 rateInput.value = DEFAULT_VALUES.rate;
 durationInput.value = DEFAULT_VALUES.duration;
-isNewSelect.value = DEFAULT_VALUES.isNew;
+const initialIsNewInput = document.querySelector(`input[name="isNew"][value="${DEFAULT_VALUES.isNew}"]`);
+if (initialIsNewInput) {
+  initialIsNewInput.checked = true;
+}
 
 calculate();
