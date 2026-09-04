@@ -8,41 +8,64 @@
 </head>
 <body>
     <div class="container">
-        <h1>Assurance Vie Calculator</h1>
-        <button id="reset-button">Reset</button>
+        <h1>Fiscalité d'un rachat d'assurance vie</h1>
+        <button id="reset-button">Réinitialiser</button>
         <form id="calculator-form">
-            <div class="form-group">
-                <label for="value-b">Montant total des primes versées :</label>
-                <input type="number" id="value-b" name="value-b">
-            </div>
-            <div class="form-group">
-                <label for="value-a">Valeur de rachat :</label>
-                <input type="number" id="value-a" name="value-a">
-            </div>
-            <div class="form-group">
-                <label for="profits">Montant des bénéfices :</label>
-                <input type="number" id="profits" name="profits" readonly>
-            </div>
-            <div class="form-group">
-                <label for="duration">Durée du contrat :</label>
-                <select id="duration" name="duration">
-                    <option value="0-4">De 0 à 4 ans</option>
-                    <option value="4-8">De 4 à 8 ans</option>
-                    <option value="8+">Au-delà de 8 ans</option>
-                </select>
-                <label for="before-sep-2017">Primes versées avant le 27 septembre 2017 :</label>
-                <input type="checkbox" id="before-sep-2017" name="before-sep-2017">
-            </div>
-            <div class="form-group">
-                <label for="tmi">TMI (Taux Marginal d'Imposition) :</label>
-                <select id="tmi" name="tmi">
-                    <option value="0">0%</option>
-                    <option value="11">11%</option>
-                    <option value="30">30%</option>
-                    <option value="41">41%</option>
-                    <option value="45">45%</option>
-                </select>
-            </div>
+            <fieldset>
+                <legend>Contrat</legend>
+                <div class="form-group">
+                    <label for="value-b">Montant total des primes versées :</label>
+                    <input type="number" id="value-b" name="value-b" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="value-a">Valeur de rachat totale du contrat :</label>
+                    <input type="number" id="value-a" name="value-a" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="profits">Montant des bénéfices :</label>
+                    <input type="number" id="profits" name="profits" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="duration">Durée du contrat :</label>
+                    <select id="duration" name="duration">
+                        <option value="0-4">De 0 à 4 ans</option>
+                        <option value="4-8">De 4 à 8 ans</option>
+                        <option value="8+">Au-delà de 8 ans</option>
+                    </select>
+                </div>
+                <div class="form-group checkbox-group">
+                    <label for="before-sep-2017">
+                        <input type="checkbox" id="before-sep-2017" name="before-sep-2017">
+                        Primes versées avant le 27 septembre 2017
+                    </label>
+                </div>
+                <p class="legal-link"><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F22414" target="_blank" rel="noopener">Référence légale (service-public.fr)</a></p>
+            </fieldset>
+
+            <fieldset>
+                <legend>Votre situation</legend>
+                <div class="form-group radio-group">
+                    <label><input type="radio" name="situation" value="seul" checked> Seul(e)</label>
+                    <label><input type="radio" name="situation" value="couple"> En couple (imposition commune)</label>
+                </div>
+                <div class="form-group">
+                    <label for="tmi">TMI (Taux Marginal d'Imposition) :</label>
+                    <select id="tmi" name="tmi">
+                        <option value="0">0%</option>
+                        <option value="11">11%</option>
+                        <option value="30">30%</option>
+                        <option value="41">41%</option>
+                        <option value="45">45%</option>
+                    </select>
+                </div>
+                <div class="form-group checkbox-group">
+                    <label for="exoneration">
+                        <input type="checkbox" id="exoneration" name="exoneration">
+                        Cas d'exonération d'impôt sur le revenu (licenciement, invalidité, mise à la retraite anticipée, liquidation judiciaire)
+                    </label>
+                </div>
+                <p class="legal-link"><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F22414" target="_blank" rel="noopener">Référence légale (service-public.fr)</a></p>
+            </fieldset>
         </form>
         <div class="results">
             <h2>Résultats</h2>

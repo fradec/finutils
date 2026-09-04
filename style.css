@@ -5,7 +5,8 @@ body {
 }
 
 .container {
-    width: 50%;
+    width: 90%;
+    max-width: 600px;
     margin: 0 auto;
     background-color: #fff;
     padding: 20px;
@@ -32,6 +33,18 @@ button#reset-button:hover {
     background-color: #ff1a1a;
 }
 
+fieldset {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    padding: 15px;
+}
+
+legend {
+    font-weight: bold;
+    padding: 0 8px;
+}
+
 .form-group {
     margin-bottom: 15px;
 }
@@ -39,6 +52,26 @@ button#reset-button:hover {
 label {
     display: block;
     margin-bottom: 5px;
+}
+
+.checkbox-group label, .radio-group label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: normal;
+}
+
+.radio-group label {
+    margin-right: 20px;
+}
+
+.legal-link {
+    margin: 5px 0 0;
+    font-size: 12px;
+}
+
+.legal-link a {
+    color: #666;
 }
 
 input[type="number"], select {

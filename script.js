@@ -15,14 +15,23 @@ function calculate() {
     const duration = document.getElementById('duration').value;
     const avantReforme = document.getElementById('before-sep-2017').checked;
     const tmi = parseFloat(document.getElementById('tmi').value) || 0;
+    const situation = document.querySelector('input[name="situation"]:checked').value;
+    const exonere = document.getElementById('exoneration').checked;
 
     document.getElementById('profits').value = gains.toFixed(2);
 
-    // Prélèvements sociaux : dus sur la totalité des gains, sans abattement, quelle que soit l'option choisie.
+    // Prélèvements sociaux : dus sur la totalité des gains, sans abattement, même en cas d'exonération d'IR.
     const prelevementsSociaux = gains * TAUX_PRELEVEMENTS_SOCIAUX;
 
+    if (exonere) {
+        document.getElementById('result-integration').innerText = `Produits exonérés d'impôt sur le revenu. Prélèvements sociaux dus : ${prelevementsSociaux.toFixed(2)} €`;
+        document.getElementById('result-forfaitaire').innerText = '';
+        return;
+    }
+
     // L'abattement ne s'applique qu'aux contrats de plus de 8 ans, et uniquement à la part imposable au titre de l'IR.
-    const baseImposable = duration === '8+' ? Math.max(0, gains - ABATTEMENT_ANNUEL.seul) : gains;
+    const abattement = ABATTEMENT_ANNUEL[situation];
+    const baseImposable = duration === '8+' ? Math.max(0, gains - abattement) : gains;
 
     const tauxForfaitaire = avantReforme
         ? TAUX_FORFAITAIRE.avantReforme[duration]
