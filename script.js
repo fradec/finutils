@@ -6,11 +6,14 @@ const priceInput = document.getElementById('price');
 const downPaymentInput = document.getElementById('downPayment');
 const isNewInputs = document.querySelectorAll('input[name="isNew"]');
 const worksInput = document.getElementById('works');
+const financingAmountInput = document.getElementById('financingAmount');
 const rateInput = document.getElementById('rate');
 const durationInput = document.getElementById('duration');
+const durationValue = document.getElementById('durationValue');
 const warningEl = document.getElementById('warning');
 const resetButton = document.getElementById('reset-button');
 const notaryFeesEl = document.getElementById('notaryFees');
+const resultDownPaymentEl = document.getElementById('resultDownPayment');
 const loanAmountEl = document.getElementById('loanAmount');
 const monthlyPaymentEl = document.getElementById('monthlyPayment');
 const totalCreditCostEl = document.getElementById('totalCreditCost');
@@ -30,7 +33,8 @@ function calculate() {
   const sanitizedWorks = Math.max(Number(worksInput.value) || 0, 0);
   const sanitizedDownPayment = Math.max(Number(downPaymentInput.value) || 0, 0);
   const sanitizedRate = Math.max(Number(rateInput.value) || 0, 0);
-  const sanitizedDuration = Math.min(Math.max(Number(durationInput.value) || 1, 1), 35);
+  const sanitizedDuration = Math.min(Math.max(Number(durationInput.value) || 1, 1), 25);
+  durationValue.value = `${sanitizedDuration} an${sanitizedDuration > 1 ? 's' : ''}`;
 
   const isNewValue = getSelectedIsNewValue();
   const hasEnoughData = sanitizedPrice > 0
@@ -47,6 +51,7 @@ function calculate() {
   resultsPlaceholder.hidden = hasEnoughData;
   if (!hasEnoughData) {
     warningEl.textContent = '';
+    financingAmountInput.value = '';
     return;
   }
 
@@ -54,6 +59,8 @@ function calculate() {
   const notaryFees = sanitizedPrice * notaryFeesRate;
   const totalCostValue = sanitizedPrice + notaryFees + sanitizedWorks;
   const loanAmount = Math.max(totalCostValue - sanitizedDownPayment, 0);
+  const downPaymentRate = Math.round((sanitizedDownPayment / sanitizedPrice) * 100);
+  financingAmountInput.value = Math.round(loanAmount);
 
   const monthlyRate = sanitizedRate / 100 / 12;
   const totalMonths = sanitizedDuration * 12;
@@ -62,11 +69,20 @@ function calculate() {
     : loanAmount / totalMonths;
   const totalCreditCost = monthlyPayment * totalMonths - loanAmount;
 
-  warningEl.textContent = sanitizedDownPayment > totalCostValue
-    ? "⚠️ L'apport dépasse le coût total de l'opération. Vous pouvez le réduire pour obtenir un scénario plus réaliste."
-    : '';
+  warningEl.className = 'warning';
+  if (sanitizedDownPayment > totalCostValue) {
+    warningEl.className = 'warning warning-danger';
+    warningEl.textContent = "L'apport dépasse le coût total de l'opération. Vous pouvez le réduire pour obtenir un scénario plus réaliste.";
+  } else if (downPaymentRate < 10) {
+    warningEl.className = 'warning warning-info';
+    warningEl.textContent = `Votre apport représente ${downPaymentRate}% du prix du bien. Il est préférable d'avoir au moins 10% d'apport.`;
+  } else {
+    warningEl.className = 'warning warning-success';
+    warningEl.textContent = `Votre apport représente ${downPaymentRate}% du prix du bien.`;
+  }
 
   notaryFeesEl.textContent = formatCurrency(notaryFees);
+  resultDownPaymentEl.textContent = formatCurrency(sanitizedDownPayment);
   loanAmountEl.textContent = formatCurrency(loanAmount);
   monthlyPaymentEl.textContent = formatCurrency(monthlyPayment);
   totalCreditCostEl.textContent = formatCurrency(totalCreditCost);

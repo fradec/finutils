@@ -15,20 +15,11 @@
 
     <form id="loan-form">
       <fieldset>
-        <legend>Financement</legend>
+        <legend>Projet</legend>
         <div class="form-group">
           <label for="price">Prix du bien :</label>
           <input type="number" id="price" min="0" step="1000">
         </div>
-        <div class="form-group">
-          <label for="downPayment">Apport (recommandé au moins 10% du prix du bien) :</label>
-          <input type="number" id="downPayment" min="0" step="1000">
-        </div>
-        <p id="warning" class="warning" aria-live="polite"></p>
-      </fieldset>
-
-      <fieldset>
-        <legend>Projet</legend>
         <div class="form-group">
           <label>Type de bien :</label>
           <div class="toggle-group" id="isNew-toggle">
@@ -49,14 +40,34 @@
       </fieldset>
 
       <fieldset>
+        <legend>Financement</legend>
+        <div class="form-group">
+          <label for="financingAmount">Coût à financer :</label>
+          <input type="number" id="financingAmount" readonly>
+          <p class="formula-note">Prix du bien + frais de notaire + travaux - apport.</p>
+        </div>
+        <div class="form-group">
+          <label for="downPayment">Apport (recommandé au moins 10% du prix du bien) :</label>
+          <input type="number" id="downPayment" min="0" step="1000">
+        </div>
+        <p id="warning" class="warning" aria-live="polite"></p>
+      </fieldset>
+
+      <fieldset>
         <legend>Crédit</legend>
         <div class="form-group">
           <label for="duration">Durée du crédit en années :</label>
-          <input type="number" id="duration" min="1" max="35">
+          <div class="range-input">
+            <input type="range" id="duration" min="1" max="25" value="20">
+            <output for="duration" id="durationValue">20 ans</output>
+          </div>
         </div>
         <div class="form-group">
           <label for="rate">Taux d'intérêt annuel :</label>
-          <input type="number" id="rate" step="0.05" min="0">
+          <div class="input-with-suffix">
+            <input type="number" id="rate" step="0.05" min="0">
+            <span aria-hidden="true">%</span>
+          </div>
         </div>
       </fieldset>
 
@@ -72,7 +83,11 @@
             <td id="notaryFees"></td>
           </tr>
           <tr>
-            <th>Montant total emprunté</th>
+            <th>Apport</th>
+            <td id="resultDownPayment"></td>
+          </tr>
+          <tr>
+            <th>Coût à financer</th>
             <td id="loanAmount"></td>
           </tr>
           <tr>

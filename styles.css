@@ -192,6 +192,58 @@ input[type="number"]:focus, input[type="date"]:focus, select:focus {
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
+input[readonly] {
+    background-color: var(--color-bg);
+    color: var(--color-text-muted);
+}
+
+input[type="number"][readonly]::-webkit-inner-spin-button,
+input[type="number"][readonly]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"][readonly] {
+    -moz-appearance: textfield;
+}
+
+.input-with-suffix {
+    position: relative;
+    width: 100%;
+}
+
+.input-with-suffix input {
+    padding-right: 34px;
+}
+
+.input-with-suffix span {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.range-input {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.range-input input {
+    flex: 1;
+    accent-color: var(--color-primary);
+}
+
+.range-input output {
+    min-width: 54px;
+    font-weight: 600;
+    color: var(--color-text);
+    text-align: right;
+}
+
 .results {
     border: 1px solid var(--color-border);
     border-radius: var(--radius);
@@ -275,12 +327,27 @@ input[type="number"]:focus, input[type="date"]:focus, select:focus {
 .warning {
     margin: 12px 0 0;
     padding: 10px 12px;
-    border: 1px solid #f3caca;
     border-radius: 8px;
-    background-color: #fff7f7;
-    color: var(--color-danger);
     font-size: 12px;
     line-height: 1.5;
+}
+
+.warning-success {
+    border: 1px solid #b7dfc3;
+    background-color: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+.warning-info {
+    border: 1px solid #f3d49b;
+    background-color: #fffaf0;
+    color: #9a6700;
+}
+
+.warning-danger {
+    border: 1px solid #f3caca;
+    background-color: #fff7f7;
+    color: var(--color-danger);
 }
 
 .warning:empty {
