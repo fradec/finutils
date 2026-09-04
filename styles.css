@@ -289,15 +289,21 @@ input[type="number"][readonly] {
 
 .monthly-summary {
     margin: 14px 0 0;
-    padding: 12px 14px;
-    border-top: 1px solid var(--color-border);
+    padding: 10px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background-color: var(--color-bg);
     color: var(--color-text);
     font-size: 14px;
 }
 
 .monthly-summary strong {
     color: var(--color-primary-dark);
-    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.monthly-value {
+    white-space: normal;
 }
 
 .warning {
@@ -347,4 +353,5 @@ input[type="number"][readonly] {
     button#reset-button {
         width: 100%;
     }
+
 }
