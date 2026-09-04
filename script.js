@@ -1,9 +1,4 @@
-import {
-  DEFAULT_VALUES,
-  NOTARY_FEE_RATE,
-} from './loan-defaults.js';
-
-let hasEditedDownPayment = false;
+import { NOTARY_FEE_RATE } from './loan-defaults.js';
 
 const priceInput = document.getElementById('price');
 const downPaymentInput = document.getElementById('downPayment');
@@ -25,7 +20,7 @@ function formatCurrency(value) {
 
 function getSelectedIsNewValue() {
   const selected = document.querySelector('input[name="isNew"]:checked');
-  return selected ? selected.value : DEFAULT_VALUES.isNew;
+  return selected ? selected.value : null;
 }
 
 function calculate() {
@@ -36,6 +31,23 @@ function calculate() {
   const sanitizedDuration = Math.min(Math.max(Number(durationInput.value) || 1, 1), 35);
 
   const isNewValue = getSelectedIsNewValue();
+  const hasEnoughData = sanitizedPrice > 0
+    && downPaymentInput.value !== ''
+    && sanitizedDownPayment >= 0
+    && isNewValue !== null
+    && durationInput.value !== ''
+    && sanitizedDuration > 0
+    && rateInput.value !== ''
+    && sanitizedRate >= 0;
+  const resultsSection = document.getElementById('results');
+  const resultsPlaceholder = document.getElementById('results-placeholder');
+  resultsSection.hidden = !hasEnoughData;
+  resultsPlaceholder.hidden = hasEnoughData;
+  if (!hasEnoughData) {
+    warningEl.textContent = '';
+    return;
+  }
+
   const notaryFeesRate = NOTARY_FEE_RATE[isNewValue] ?? NOTARY_FEE_RATE.ancien;
   const notaryFees = sanitizedPrice * notaryFeesRate;
   const totalCostValue = sanitizedPrice + notaryFees + sanitizedWorks;
@@ -59,19 +71,7 @@ function calculate() {
   totalCostEl.textContent = formatCurrency(totalCostValue + totalCreditCost);
 }
 
-downPaymentInput.addEventListener('input', () => {
-  hasEditedDownPayment = true;
-  calculate();
-});
-
-priceInput.addEventListener('input', () => {
-  if (!hasEditedDownPayment) {
-    downPaymentInput.value = Math.round(Number(priceInput.value) * 0.1 || 0);
-  }
-  calculate();
-});
-
-[worksInput, rateInput, durationInput, downPaymentInput].forEach((el) => {
+[priceInput, worksInput, rateInput, durationInput, downPaymentInput].forEach((el) => {
   el.addEventListener('input', calculate);
 });
 
@@ -80,26 +80,8 @@ isNewInputs.forEach((input) => {
 });
 
 resetButton.addEventListener('click', () => {
-  priceInput.value = DEFAULT_VALUES.price;
-  downPaymentInput.value = DEFAULT_VALUES.downPayment;
-  worksInput.value = DEFAULT_VALUES.works;
-  rateInput.value = DEFAULT_VALUES.rate;
-  durationInput.value = DEFAULT_VALUES.duration;
-  const defaultIsNewInput = document.querySelector(`input[name="isNew"][value="${DEFAULT_VALUES.isNew}"]`);
-  if (defaultIsNewInput) {
-    defaultIsNewInput.checked = true;
-  }
+  document.getElementById('loan-form').reset();
   calculate();
 });
-
-priceInput.value = DEFAULT_VALUES.price;
-downPaymentInput.value = DEFAULT_VALUES.downPayment;
-worksInput.value = DEFAULT_VALUES.works;
-rateInput.value = DEFAULT_VALUES.rate;
-durationInput.value = DEFAULT_VALUES.duration;
-const initialIsNewInput = document.querySelector(`input[name="isNew"][value="${DEFAULT_VALUES.isNew}"]`);
-if (initialIsNewInput) {
-  initialIsNewInput.checked = true;
-}
 
 calculate();

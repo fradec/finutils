@@ -199,6 +199,16 @@ input[type="number"]:focus, input[type="date"]:focus, select:focus {
     margin-top: 18px;
 }
 
+.results-placeholder {
+    margin-top: 18px;
+    padding: 16px;
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius);
+    color: var(--color-text-muted);
+    font-size: 14px;
+    text-align: center;
+}
+
 .results h2 {
     color: var(--color-primary-dark);
 }

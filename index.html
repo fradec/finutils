@@ -32,7 +32,7 @@
           <label>Type de bien (incidence sur les frais de notaire) :</label>
           <div class="toggle-group" id="isNew-toggle">
             <label>
-              <input type="radio" name="isNew" value="ancien" checked>
+              <input type="radio" name="isNew" value="ancien">
               <span>Ancien</span>
             </label>
             <label>
@@ -62,7 +62,8 @@
       <p id="warning" class="warning" aria-live="polite"></p>
     </form>
 
-    <div id="results" class="results">
+    <p class="results-placeholder" id="results-placeholder">Renseignez les informations obligatoires ci-dessus pour voir apparaître les résultats.</p>
+    <div id="results" class="results" hidden>
       <h2>Résultats</h2>
       <table class="results-table">
         <tbody>
