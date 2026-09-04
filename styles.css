@@ -188,6 +188,27 @@ input[type="number"][readonly] {
     pointer-events: none;
 }
 
+.calculated-value {
+    margin: 14px 0 0;
+    padding: 10px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background-color: var(--color-bg);
+    font-size: 14px;
+}
+
+.calculated-label {
+    color: var(--color-text);
+}
+
+.calculated-amount {
+    display: inline-flex;
+    gap: 6px;
+    white-space: nowrap;
+    font-weight: 600;
+    color: var(--color-primary-dark);
+}
+
 .range-input {
     display: flex;
     align-items: center;

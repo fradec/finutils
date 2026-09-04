@@ -18,7 +18,10 @@
         <legend>Projet</legend>
         <div class="form-group">
           <label for="price">Prix du bien :</label>
-          <input type="number" id="price" min="0" step="1000">
+          <div class="input-with-suffix">
+            <input type="number" id="price" min="0" step="1000">
+            <span aria-hidden="true">€</span>
+          </div>
         </div>
         <div class="form-group">
           <label>Type de bien :</label>
@@ -35,20 +38,31 @@
         </div>
         <div class="form-group">
           <label for="works">Coût des travaux à financer (optionnel) :</label>
-          <input type="number" id="works" min="0" step="1000">
+          <div class="input-with-suffix">
+            <input type="number" id="works" min="0" step="1000">
+            <span aria-hidden="true">€</span>
+          </div>
         </div>
       </fieldset>
 
       <fieldset>
         <legend>Financement</legend>
         <div class="form-group">
-          <label for="financingAmount">Coût à financer :</label>
-          <input type="number" id="financingAmount" readonly>
+          <div class="calculated-value">
+            <span class="calculated-label">Coût à financer :</span>
+            <span class="calculated-amount">
+              <output id="financingAmount" aria-label="Coût à financer"></output>
+              <span aria-hidden="true">€</span>
+            </span>
+          </div>
           <p class="formula-note">Prix du bien + travaux + frais de notaire - apport.</p>
         </div>
         <div class="form-group">
           <label for="downPayment">Apport (recommandé au moins 10% du prix du bien) :</label>
-          <input type="number" id="downPayment" min="0" step="1000">
+          <div class="input-with-suffix">
+            <input type="number" id="downPayment" min="0" step="1000">
+            <span aria-hidden="true">€</span>
+          </div>
         </div>
         <p id="warning" class="warning" aria-live="polite"></p>
       </fieldset>
