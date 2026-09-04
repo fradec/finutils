@@ -32,12 +32,12 @@
                     <input type="date" id="date-souscription" name="date-souscription" max="">
                 </div>
                 <div class="form-group">
-                    <label for="duration">Durée du contrat :</label>
-                    <select id="duration" name="duration">
-                        <option value="0-4">De 0 à 4 ans</option>
-                        <option value="4-8">De 4 à 8 ans</option>
-                        <option value="8+">Au-delà de 8 ans</option>
-                    </select>
+                    <label>Durée du contrat :</label>
+                    <div class="toggle-group" id="duration-toggle">
+                        <label><input type="radio" name="duration" value="0-4" checked><span>De 0 à 4 ans</span></label>
+                        <label><input type="radio" name="duration" value="4-8"><span>De 4 à 8 ans</span></label>
+                        <label><input type="radio" name="duration" value="8+"><span>Au-delà de 8 ans</span></label>
+                    </div>
                     <p class="auto-note" id="duration-auto-note"></p>
                 </div>
                 <div class="form-group checkbox-group">
@@ -50,9 +50,9 @@
 
             <fieldset>
                 <legend>Rachat</legend>
-                <div class="form-group radio-group">
-                    <label><input type="radio" name="rachat-type" value="total" checked> Rachat total</label>
-                    <label><input type="radio" name="rachat-type" value="partiel"> Rachat partiel</label>
+                <div class="form-group toggle-group">
+                    <label><input type="radio" name="rachat-type" value="total" checked><span>Rachat total</span></label>
+                    <label><input type="radio" name="rachat-type" value="partiel"><span>Rachat partiel</span></label>
                 </div>
                 <div class="form-group" id="partiel-fields" hidden>
                     <label for="montant-retire">Montant retiré :</label>
@@ -72,14 +72,14 @@
                     <p class="abattement-note">Au-delà de 8 ans, un abattement annuel de 4 600 € (9 200 € en couple) réduit les gains soumis à l'impôt sur le revenu, avant application du taux.</p>
                 </div>
                 <div class="form-group">
-                    <label for="tmi">TMI (Taux Marginal d'Imposition) :</label>
-                    <select id="tmi" name="tmi">
-                        <option value="0">0%</option>
-                        <option value="11">11%</option>
-                        <option value="30">30%</option>
-                        <option value="41">41%</option>
-                        <option value="45">45%</option>
-                    </select>
+                    <label>TMI (Taux Marginal d'Imposition) :</label>
+                    <div class="toggle-group">
+                        <label><input type="radio" name="tmi" value="0" checked><span>0%</span></label>
+                        <label><input type="radio" name="tmi" value="11"><span>11%</span></label>
+                        <label><input type="radio" name="tmi" value="30"><span>30%</span></label>
+                        <label><input type="radio" name="tmi" value="41"><span>41%</span></label>
+                        <label><input type="radio" name="tmi" value="45"><span>45%</span></label>
+                    </div>
                 </div>
                 <div class="form-group checkbox-group">
                     <label for="exoneration">

@@ -17,11 +17,16 @@ document.querySelectorAll('input[name="rachat-type"]').forEach((radio) => radio.
 }));
 
 // L'abattement (et le choix seul/couple qui en double le montant) ne concerne que les contrats de plus de 8 ans.
-const durationSelect = document.getElementById('duration');
+const durationRadios = document.querySelectorAll('input[name="duration"]');
+const durationSelect = {
+    get value() { return document.querySelector('input[name="duration"]:checked').value; },
+    set value(v) { document.querySelector(`input[name="duration"][value="${v}"]`).checked = true; },
+    set disabled(v) { durationRadios.forEach((radio) => { radio.disabled = v; }); },
+};
 function updateAbattementVisibility() {
     document.getElementById('abattement-fields').hidden = durationSelect.value !== '8+';
 }
-durationSelect.addEventListener('change', updateAbattementVisibility);
+durationRadios.forEach((radio) => radio.addEventListener('change', updateAbattementVisibility));
 
 // Date de souscription (optionnelle) : calcule et verrouille automatiquement la tranche de durée.
 document.getElementById('date-souscription').addEventListener('input', (event) => {
@@ -68,9 +73,9 @@ function calculate() {
 
     // Quote-part de gains afférente au montant retiré (art. 125-0 A CGI), ramenée à la valeur de rachat totale.
     const gains = Math.max(0, montantRetire * (valeurRachat - primesVersees) / valeurRachat);
-    const duration = document.getElementById('duration').value;
+    const duration = durationSelect.value;
     const avantReforme = document.getElementById('before-sep-2017').checked;
-    const tmi = parseFloat(document.getElementById('tmi').value) || 0;
+    const tmi = parseFloat(document.querySelector('input[name="tmi"]:checked').value) || 0;
     const situation = document.querySelector('input[name="situation"]:checked').value;
     const exonere = document.getElementById('exoneration').checked;
 
