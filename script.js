@@ -1,6 +1,5 @@
 import {
   DEFAULT_VALUES,
-  HELP_TEXT,
   NOTARY_FEE_RATE,
 } from './loan-defaults.js';
 
@@ -19,25 +18,8 @@ const monthlyPaymentEl = document.getElementById('monthlyPayment');
 const totalCreditCostEl = document.getElementById('totalCreditCost');
 const totalCostEl = document.getElementById('totalCost');
 
-const helpFields = {
-  price: document.getElementById('help-price'),
-  downPayment: document.getElementById('help-downPayment'),
-  isNew: document.getElementById('help-isNew'),
-  works: document.getElementById('help-works'),
-  rate: document.getElementById('help-rate'),
-  duration: document.getElementById('help-duration'),
-};
-
 function formatCurrency(value) {
   return value.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
-}
-
-function setHelpText() {
-  Object.entries(HELP_TEXT).forEach(([key, text]) => {
-    if (helpFields[key]) {
-      helpFields[key].textContent = text;
-    }
-  });
 }
 
 function calculate() {
@@ -92,7 +74,5 @@ worksInput.value = DEFAULT_VALUES.works;
 rateInput.value = DEFAULT_VALUES.rate;
 durationInput.value = DEFAULT_VALUES.duration;
 isNewSelect.value = DEFAULT_VALUES.isNew;
-
-setHelpText();
 
 calculate();
