@@ -44,7 +44,7 @@
         <div class="form-group">
           <label for="financingAmount">Coût à financer :</label>
           <input type="number" id="financingAmount" readonly>
-          <p class="formula-note">Prix du bien + frais de notaire + travaux - apport.</p>
+          <p class="formula-note">Prix du bien + travaux + frais de notaire - apport.</p>
         </div>
         <div class="form-group">
           <label for="downPayment">Apport (recommandé au moins 10% du prix du bien) :</label>
@@ -108,7 +108,10 @@
           </tr>
         </tbody>
       </table>
-      <p class="monthly-summary">Mensualité sur <span id="monthlyDuration">20 ans</span> : <strong id="monthlyPayment"></strong> / mois pendant <span id="monthlyCount">240 mois</span>.</p>
+      <p class="monthly-summary">
+        <span class="monthly-label">Mensualité sur <span id="monthlyDuration">20 ans</span> :</span>
+        <span class="monthly-value"><strong id="monthlyPayment"></strong> / mois pendant <span id="monthlyCount">240 mois</span>.</span>
+      </p>
       <p class="assumption-note">Simulation simplifiée, hors assurance emprunteur et hors frais annexes éventuels.</p>
     </div>
   </div>
