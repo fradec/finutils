@@ -17,11 +17,11 @@
       <fieldset>
         <legend>Financement</legend>
         <div class="form-group">
-          <label for="price">Prix du bien</label>
+          <label for="price">Prix du bien :</label>
           <input type="number" id="price" min="0" step="1000">
         </div>
         <div class="form-group">
-          <label for="downPayment">Apport (généralement 10%)</label>
+          <label for="downPayment">Apport (généralement 10% du prix du bien) :</label>
           <input type="number" id="downPayment" min="0" step="1000">
         </div>
       </fieldset>
@@ -29,7 +29,7 @@
       <fieldset>
         <legend>Projet</legend>
         <div class="form-group">
-          <label>Type de bien</label>
+          <label>Type de bien (incidence sur les frais de notaire) :</label>
           <div class="toggle-group" id="isNew-toggle">
             <label>
               <input type="radio" name="isNew" value="ancien" checked>
@@ -42,7 +42,7 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="works">Coût des travaux</label>
+          <label for="works">Coût des travaux à financer (optionnel) :</label>
           <input type="number" id="works" min="0" step="1000">
         </div>
       </fieldset>
@@ -50,11 +50,11 @@
       <fieldset>
         <legend>Crédit</legend>
         <div class="form-group">
-          <label for="duration">Durée du crédit</label>
+          <label for="duration">Durée du crédit en années :</label>
           <input type="number" id="duration" min="1" max="35">
         </div>
         <div class="form-group">
-          <label for="rate">Taux d'intérêt annuel</label>
+          <label for="rate">Taux d'intérêt annuel :</label>
           <input type="number" id="rate" step="0.05" min="0">
         </div>
       </fieldset>
