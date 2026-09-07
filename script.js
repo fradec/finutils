@@ -1,13 +1,5 @@
-import {
-    SOURCE_URL,
-    DATE_REFORME,
-    TAUX_PRELEVEMENTS_SOCIAUX,
-    ABATTEMENT_ANNUEL,
-    SEUIL_PRIMES_REDUIT,
-    TAUX_FORFAITAIRE,
-    CAS_EXONERATION,
-    NOTARY_FEE_RATE,
-} from './constants.js';
+import { SOURCE_URL, DATE_REFORME, CAS_EXONERATION } from './constants.js';
+import { computeAvResult, computeLoan } from './calculations.js';
 
 // Formateur monétaire commun ; av masque les décimales sur un montant rond, pret les affiche toujours.
 function formatEUR(montant, { minimumFractionDigits = 2 } = {}) {
@@ -149,22 +141,21 @@ function initAv() {
             return;
         }
 
-        // Quote-part de gains afférente au montant retiré (art. 125-0 A CGI), ramenée à la valeur de rachat totale.
-        const gains = Math.max(0, montantRetire * (valeurRachat - primesVersees) / valeurRachat);
         const duration = durationSelect.value;
         const avantReforme = beforeSep2017Checkbox.checked;
         const tmi = parseFloat(document.querySelector('input[name="tmi"]:checked').value) || 0;
         const situation = document.querySelector('input[name="situation"]:checked').value;
         const exonere = exonerationCheckbox.checked;
 
-        const plusValue = gains > 0;
+        const result = computeAvResult({ primesVersees, valeurRachat, montantRetire, duration, avantReforme, tmi, situation, exonere });
+
         // Une moins-value sur assurance vie n'ouvre droit à aucune imputation ni report (BOI-RPPM-RCM-20-10-20-50).
-        profitsLabelEl.innerText = plusValue
+        profitsLabelEl.innerText = result.plusValue
             ? 'Bénéfices imposables sur ce rachat :'
             : "Ce rachat ne dégage aucune plus-value : il n'est donc pas imposable. La perte constatée n'est ni imputable sur vos autres revenus ni reportable.";
-        profitsValueEl.innerText = plusValue ? formatEUR(gains, { minimumFractionDigits: 0 }) : '';
-        profitsInfo.classList.toggle('is-positive', plusValue);
-        profitsInfo.classList.toggle('is-negative', !plusValue);
+        profitsValueEl.innerText = result.plusValue ? formatEUR(result.gains, { minimumFractionDigits: 0 }) : '';
+        profitsInfo.classList.toggle('is-positive', result.plusValue);
+        profitsInfo.classList.toggle('is-negative', !result.plusValue);
         profitsInfo.hidden = primesVersees <= 0;
 
         rowIntegration.classList.remove('best-option');
@@ -174,36 +165,20 @@ function initAv() {
         badgeForfaitaireEl.innerText = '';
         rowForfaitaire.hidden = false;
 
-        // Prélèvements sociaux : dus sur la totalité des gains, sans abattement, même en cas d'exonération d'IR.
-        const prelevementsSociaux = gains * TAUX_PRELEVEMENTS_SOCIAUX;
-
-        if (exonere) {
+        if (result.exonere) {
             rowIntegration.querySelector('td').innerText = "Exonération d'IR (prélèvements sociaux seuls)";
-            taxIntegrationEl.innerText = formatEUR(prelevementsSociaux, { minimumFractionDigits: 0 });
-            netIntegrationEl.innerText = formatEUR(montantRetire - prelevementsSociaux, { minimumFractionDigits: 0 });
+            taxIntegrationEl.innerText = formatEUR(result.taxIntegration, { minimumFractionDigits: 0 });
+            netIntegrationEl.innerText = formatEUR(result.netIntegration, { minimumFractionDigits: 0 });
             rowForfaitaire.hidden = true;
             return;
         }
 
-        // L'abattement ne s'applique qu'aux contrats de plus de 8 ans, et uniquement à la part imposable au titre de l'IR.
-        const abattement = ABATTEMENT_ANNUEL[situation];
-        const baseImposable = duration === '8+' ? Math.max(0, gains - abattement) : gains;
+        taxIntegrationEl.innerText = formatEUR(result.taxIntegration, { minimumFractionDigits: 0 });
+        netIntegrationEl.innerText = formatEUR(result.netIntegration, { minimumFractionDigits: 0 });
+        taxForfaitaireEl.innerText = formatEUR(result.taxForfaitaire, { minimumFractionDigits: 0 });
+        netForfaitaireEl.innerText = formatEUR(result.netForfaitaire, { minimumFractionDigits: 0 });
 
-        const tauxForfaitaire = avantReforme
-            ? TAUX_FORFAITAIRE.avantReforme[duration]
-            : duration === '8+'
-                ? (primesVersees <= SEUIL_PRIMES_REDUIT ? TAUX_FORFAITAIRE.apresReforme['8+sousSeuil'] : TAUX_FORFAITAIRE.apresReforme['8+surSeuil'])
-                : TAUX_FORFAITAIRE.apresReforme[duration];
-
-        const integrationResult = baseImposable * (tmi / 100) + prelevementsSociaux;
-        const forfaitaireResult = baseImposable * tauxForfaitaire + prelevementsSociaux;
-
-        taxIntegrationEl.innerText = formatEUR(integrationResult, { minimumFractionDigits: 0 });
-        netIntegrationEl.innerText = formatEUR(montantRetire - integrationResult, { minimumFractionDigits: 0 });
-        taxForfaitaireEl.innerText = formatEUR(forfaitaireResult, { minimumFractionDigits: 0 });
-        netForfaitaireEl.innerText = formatEUR(montantRetire - forfaitaireResult, { minimumFractionDigits: 0 });
-
-        const meilleureLigne = integrationResult <= forfaitaireResult ? rowIntegration : rowForfaitaire;
+        const meilleureLigne = result.meilleureOption === 'integration' ? rowIntegration : rowForfaitaire;
         const badgeMeilleur = meilleureLigne === rowIntegration ? badgeIntegrationEl : badgeForfaitaireEl;
         meilleureLigne.classList.add('best-option');
         badgeMeilleur.innerText = '✅ À privilégier';
@@ -268,27 +243,32 @@ function initPret() {
         const hasFinancingData = sanitizedPrice > 0
             && downPaymentInput.value !== ''
             && isNewValue !== null;
-        if (hasFinancingData) {
-            const notaryFeesRate = NOTARY_FEE_RATE[isNewValue] ?? NOTARY_FEE_RATE.ancien;
-            const notaryFees = sanitizedPrice * notaryFeesRate;
-            const totalCostValue = sanitizedPrice + notaryFees + sanitizedWorks;
-            const loanAmount = Math.max(totalCostValue - sanitizedDownPayment, 0);
-            const downPaymentRate = Math.round((sanitizedDownPayment / sanitizedPrice) * 100);
+        const loan = hasFinancingData
+            ? computeLoan({
+                price: sanitizedPrice,
+                works: sanitizedWorks,
+                downPayment: sanitizedDownPayment,
+                rate: sanitizedRate,
+                durationYears: sanitizedDuration,
+                isNew: isNewValue,
+            })
+            : null;
 
-            financingAmountInput.value = formatAmount(loanAmount);
+        if (loan) {
+            financingAmountInput.value = formatAmount(loan.loanAmount);
             financingUnit.hidden = false;
-            notaryFeesLabelEl.textContent = `Frais de notaire estimés (${Math.round(notaryFeesRate * 100)}%)`;
-            resultDownPaymentLabelEl.textContent = `Apport (${downPaymentRate}%)`;
+            notaryFeesLabelEl.textContent = `Frais de notaire estimés (${Math.round(loan.notaryFeesRate * 100)}%)`;
+            resultDownPaymentLabelEl.textContent = `Apport (${loan.downPaymentRate}%)`;
             warningEl.className = 'warning';
-            if (sanitizedDownPayment > totalCostValue) {
+            if (sanitizedDownPayment > loan.totalCost) {
                 warningEl.className = 'warning warning-danger';
                 warningEl.textContent = "L'apport dépasse le coût total de l'opération. Vous pouvez le réduire pour obtenir un scénario plus réaliste.";
-            } else if (downPaymentRate < 10) {
+            } else if (loan.downPaymentRate < 10) {
                 warningEl.className = 'warning warning-info';
-                warningEl.textContent = `Votre apport représente ${downPaymentRate}% du prix du bien. Il est préférable d'avoir au moins 10% d'apport.`;
+                warningEl.textContent = `Votre apport représente ${loan.downPaymentRate}% du prix du bien. Il est préférable d'avoir au moins 10% d'apport.`;
             } else {
                 warningEl.className = 'warning warning-success';
-                warningEl.textContent = `Votre apport représente ${downPaymentRate}% du prix du bien.`;
+                warningEl.textContent = `Votre apport représente ${loan.downPaymentRate}% du prix du bien.`;
             }
         } else {
             financingAmountInput.value = '';
@@ -296,33 +276,14 @@ function initPret() {
             warningEl.textContent = '';
         }
 
-        const hasEnoughData = sanitizedPrice > 0
-            && downPaymentInput.value !== ''
-            && sanitizedDownPayment >= 0
-            && isNewValue !== null
-            && durationInput.value !== ''
-            && sanitizedDuration > 0
-            && rateInput.value !== ''
-            && sanitizedRate >= 0;
+        const hasEnoughData = hasFinancingData && durationInput.value !== '' && rateInput.value !== '';
         resultsSection.hidden = !hasEnoughData;
         resultsPlaceholder.hidden = hasEnoughData;
         if (!hasEnoughData) {
             return;
         }
 
-        const notaryFeesRate = NOTARY_FEE_RATE[isNewValue] ?? NOTARY_FEE_RATE.ancien;
-        const notaryFees = sanitizedPrice * notaryFeesRate;
-        const totalCostValue = sanitizedPrice + notaryFees + sanitizedWorks;
-        const loanAmount = Math.max(totalCostValue - sanitizedDownPayment, 0);
-
-        const monthlyRate = sanitizedRate / 100 / 12;
-        const totalMonths = sanitizedDuration * 12;
-        const monthlyPayment = loanAmount > 0 && monthlyRate > 0
-            ? (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -totalMonths))
-            : loanAmount / totalMonths;
-        const totalCreditCost = monthlyPayment * totalMonths - loanAmount;
-
-        notaryFeesEl.textContent = formatEUR(notaryFees);
+        notaryFeesEl.textContent = formatEUR(loan.notaryFees);
         resultPriceEl.textContent = formatEUR(sanitizedPrice);
         resultWorksRow.hidden = sanitizedWorks === 0;
         resultWorksEl.textContent = formatEUR(sanitizedWorks);
@@ -333,12 +294,12 @@ function initPret() {
             .filter((row) => !row.hidden)
             .forEach((row, index) => row.classList.add(index % 2 === 0 ? 'stripe-odd' : 'stripe-even'));
         resultDownPaymentEl.textContent = formatEUR(sanitizedDownPayment);
-        loanAmountEl.textContent = formatEUR(loanAmount);
-        monthlyPaymentEl.textContent = formatEUR(monthlyPayment);
+        loanAmountEl.textContent = formatEUR(loan.loanAmount);
+        monthlyPaymentEl.textContent = formatEUR(loan.monthlyPayment);
         monthlyDurationEl.textContent = `${sanitizedDuration} an${sanitizedDuration > 1 ? 's' : ''}`;
-        monthlyCountEl.textContent = `${totalMonths} mois`;
-        totalCreditCostEl.textContent = formatEUR(totalCreditCost);
-        totalCostEl.textContent = formatEUR(totalCostValue + totalCreditCost);
+        monthlyCountEl.textContent = `${loan.totalMonths} mois`;
+        totalCreditCostEl.textContent = formatEUR(loan.totalCreditCost);
+        totalCostEl.textContent = formatEUR(loan.totalCostWithCredit);
     }
 
     downPaymentInput.addEventListener('input', () => {
