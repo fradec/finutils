@@ -1,4 +1,5 @@
 # Loan simulation
 
-Simple page to estimate a loan estate simulation in French context.
-Try it [here](https://fradec.github.io/loan-simulation/)!
+Simulateur de crédit immobilier dans le contexte français (coût à financer, mensualité, coût total de l'opération).
+
+Aucune dépendance ni build : ouvrir `index.html` via un petit serveur local (`python3 -m http.server`) suffit.
