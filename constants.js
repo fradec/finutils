@@ -1,5 +1,7 @@
 // Règles fiscales des rachats d'assurance-vie en France (contrats en unités de compte/euros, hors succession).
 // Référence officielle : https://www.service-public.gouv.fr/particuliers/vosdroits/F22414
+// --- Assurance vie ---
+
 export const SOURCE_URL = 'https://www.service-public.gouv.fr/particuliers/vosdroits/F22414';
 
 // Date à partir de laquelle les primes versées suivent le régime issu de la loi de finances 2018.
@@ -29,3 +31,10 @@ export const CAS_EXONERATION = [
     'Mise à la retraite anticipée',
     "Liquidation judiciaire (cessation d'activité non salariée)",
 ];
+
+// --- Prêt immobilier ---
+
+export const NOTARY_FEE_RATE = {
+    neuf: 0.03,
+    ancien: 0.08,
+};

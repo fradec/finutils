@@ -3,8 +3,8 @@ import {
     ABATTEMENT_ANNUEL,
     SEUIL_PRIMES_REDUIT,
     TAUX_FORFAITAIRE,
-} from './fiscal-rules.js';
-import { NOTARY_FEE_RATE } from './loan-defaults.js';
+    NOTARY_FEE_RATE,
+} from './constants.js';
 
 // Formateur monétaire commun ; av masque les décimales sur un montant rond, pret les affiche toujours.
 function formatEUR(montant, { minimumFractionDigits = 2 } = {}) {
