@@ -1,4 +1,4 @@
-# Loan simulation
+# Simulation de prêt immobilier
 
 Simulateur de crédit immobilier dans le contexte français (coût à financer, mensualité, coût total de l'opération).
 

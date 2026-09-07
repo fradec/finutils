@@ -4,5 +4,5 @@ Outils simples de simulation financière, sans dépendance ni build : chaque pag
 
 ## Outils disponibles
 
-- [`assurance-vie/`](assurance-vie/) — Calculateur de fiscalité d'un rachat d'assurance vie (barème progressif vs. prélèvement forfaitaire).
-- [`loan-simulation/`](loan-simulation/) — Simulateur de crédit immobilier (coût à financer, mensualité, coût total).
+- [`av/`](av/) — Calculateur de fiscalité d'un rachat d'assurance vie (barème progressif vs. prélèvement forfaitaire).
+- [`pret/`](pret/) — Simulateur de crédit immobilier (coût à financer, mensualité, coût total).
