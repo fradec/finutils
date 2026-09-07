@@ -1,3 +1,5 @@
+/* Framework visuel de finutils : socle commun, puis styles spécifiques à chaque outil. */
+
 :root {
     --color-bg: #f2f4f7;
     --color-surface: #ffffff;
@@ -9,6 +11,7 @@
     --color-success: #15803d;
     --color-success-bg: #ecfdf3;
     --color-danger: #dc2626;
+    --color-danger-bg: #fef2f2;
     --radius: 10px;
 }
 
@@ -52,7 +55,35 @@ h2 {
     margin: 0 0 12px;
 }
 
-button#reset-button {
+.tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.tab-button {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background-color: var(--color-bg);
+    color: var(--color-text-muted);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.tab-button[aria-selected="true"] {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #fff;
+}
+
+.tab-panel[hidden] {
+    display: none;
+}
+
+button.reset-button {
     flex-shrink: 0;
     padding: 8px 16px;
     background-color: transparent;
@@ -63,7 +94,7 @@ button#reset-button {
     font-size: 14px;
 }
 
-button#reset-button:hover {
+button.reset-button:hover {
     background-color: var(--color-bg);
     color: var(--color-danger);
     border-color: var(--color-danger);
@@ -95,6 +126,18 @@ label {
     margin-bottom: 6px;
     font-size: 14px;
     color: var(--color-text-muted);
+}
+
+.checkbox-group label, .radio-group label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: normal;
+    color: var(--color-text);
+}
+
+.radio-group label {
+    margin-right: 20px;
 }
 
 .toggle-group {
@@ -138,7 +181,12 @@ label {
     color: #fff;
 }
 
-input[type="number"] {
+.toggle-group label:has(input:disabled) {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+input[type="number"], input[type="date"], select {
     width: 100%;
     padding: 9px 10px;
     border: 1px solid var(--color-border);
@@ -148,25 +196,15 @@ input[type="number"] {
     background-color: var(--color-surface);
 }
 
-input[type="number"]:focus {
+input[type="number"]:focus, input[type="date"]:focus, select:focus {
     outline: none;
     border-color: var(--color-primary);
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
-input[readonly] {
+select:disabled {
     background-color: var(--color-bg);
     color: var(--color-text-muted);
-}
-
-input[type="number"][readonly]::-webkit-inner-spin-button,
-input[type="number"][readonly]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-input[type="number"][readonly] {
-    -moz-appearance: textfield;
 }
 
 .input-with-suffix {
@@ -186,6 +224,152 @@ input[type="number"][readonly] {
     color: var(--color-text-muted);
     font-size: 14px;
     pointer-events: none;
+}
+
+.results {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-top: 18px;
+}
+
+.results h2 {
+    color: var(--color-primary-dark);
+}
+
+.results-placeholder {
+    margin-top: 18px;
+    padding: 16px;
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius);
+    color: var(--color-text-muted);
+    font-size: 14px;
+    text-align: center;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.formula-note {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--color-text-muted);
+}
+
+@media (max-width: 640px) {
+    body {
+        padding: 20px 12px;
+    }
+
+    .container {
+        padding: 20px 18px;
+    }
+
+    .app-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* --- Assurance vie --- */
+
+.legal-link {
+    margin: 12px 0 0;
+    font-size: 12px;
+}
+
+.legal-link a {
+    color: var(--color-text-muted);
+}
+
+.auto-note {
+    margin: 6px 0 0;
+    font-size: 12px;
+    color: var(--color-success);
+}
+
+.abattement-note {
+    margin: 10px 0 0;
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+/* Valeur calculée automatiquement, présentée comme une information et non comme un champ de saisie. */
+.info-note {
+    margin: 0 0 14px;
+    padding: 10px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background-color: var(--color-bg);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+}
+
+.info-note[hidden] {
+    display: none;
+}
+
+.info-note strong {
+    color: var(--color-text);
+    font-size: 14px;
+}
+
+.info-note.is-positive {
+    border-color: var(--color-success);
+    background-color: var(--color-success-bg);
+}
+
+.info-note.is-positive strong {
+    color: var(--color-success);
+}
+
+.info-note.is-negative {
+    border-color: var(--color-danger);
+    background-color: var(--color-danger-bg);
+    color: var(--color-danger);
+}
+
+#tab-av .results-table th, #tab-av .results-table td {
+    padding: 12px;
+    border: 1px solid var(--color-border);
+    text-align: left;
+}
+
+#tab-av .results-table th {
+    background-color: var(--color-bg);
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+#tab-av .results-table tbody tr.best-option {
+    background-color: var(--color-success-bg);
+    font-weight: 600;
+}
+
+#tab-av .results-table tbody tr.best-option td:last-child {
+    color: var(--color-success);
+}
+
+/* --- Prêt immobilier --- */
+
+input[readonly] {
+    background-color: var(--color-bg);
+    color: var(--color-text-muted);
+}
+
+input[type="number"][readonly]::-webkit-inner-spin-button,
+input[type="number"][readonly]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"][readonly] {
+    -moz-appearance: textfield;
 }
 
 .calculated-value {
@@ -227,48 +411,21 @@ input[type="number"][readonly] {
     text-align: right;
 }
 
-.results {
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    padding: 18px;
-    margin-top: 18px;
-}
-
-.results-placeholder {
-    margin-top: 18px;
-    padding: 16px;
-    border: 1px dashed var(--color-border);
-    border-radius: var(--radius);
-    color: var(--color-text-muted);
-    font-size: 14px;
-    text-align: center;
-}
-
-.results h2 {
-    color: var(--color-primary-dark);
-}
-
-.results-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-}
-
-.results-table th,
-.results-table td {
+#tab-pret .results-table th,
+#tab-pret .results-table td {
     padding: 12px 14px;
     border: 1px solid var(--color-border);
     text-align: left;
     vertical-align: middle;
 }
 
-.results-table th {
+#tab-pret .results-table th {
     width: auto;
     font-weight: 600;
     color: var(--color-text-muted);
 }
 
-.results-table .operator {
+#tab-pret .results-table .operator {
     display: inline-block;
     width: 20px;
     color: var(--color-text-muted);
@@ -276,27 +433,21 @@ input[type="number"][readonly] {
     font-weight: 400;
 }
 
-.results-table td {
+#tab-pret .results-table td {
     white-space: nowrap;
     font-weight: 600;
     color: var(--color-text);
     text-align: right;
 }
 
-.results-table tbody tr.stripe-odd th,
-.results-table tbody tr.stripe-odd td {
+#tab-pret .results-table tbody tr.stripe-odd th,
+#tab-pret .results-table tbody tr.stripe-odd td {
     background-color: #f8fafc;
 }
 
-.results-table tbody tr.stripe-even th,
-.results-table tbody tr.stripe-even td {
+#tab-pret .results-table tbody tr.stripe-even th,
+#tab-pret .results-table tbody tr.stripe-even td {
     background-color: #ffffff;
-}
-
-.formula-note {
-    margin-top: 12px;
-    font-size: 12px;
-    color: var(--color-text-muted);
 }
 
 .assumption-note {
@@ -357,22 +508,3 @@ input[type="number"][readonly] {
     display: none;
 }
 
-@media (max-width: 640px) {
-    body {
-        padding: 20px 12px;
-    }
-
-    .container {
-        padding: 20px 18px;
-    }
-
-    .app-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    button#reset-button {
-        width: 100%;
-    }
-
-}

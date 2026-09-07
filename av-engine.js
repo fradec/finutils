@@ -7,10 +7,12 @@ import {
 
 const formatEUR = (montant) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(montant);
 
+export function initAv() {
+
 document.getElementById('date-souscription').max = new Date().toISOString().split('T')[0];
 
 document.getElementById('calculator-form').addEventListener('input', calculate);
-document.getElementById('reset-button').addEventListener('click', resetForm);
+document.getElementById('reset-button-av').addEventListener('click', resetForm);
 
 document.querySelectorAll('input[name="rachat-type"]').forEach((radio) => radio.addEventListener('change', () => {
     document.getElementById('partiel-fields').hidden = document.querySelector('input[name="rachat-type"]:checked').value !== 'partiel';
@@ -72,7 +74,7 @@ function calculate() {
     const montantRetire = rachatPartiel ? (parseFloat(document.getElementById('montant-retire').value) || 0) : valeurRachat;
 
     const resultsSection = document.getElementById('results-section');
-    const resultsPlaceholder = document.getElementById('results-placeholder');
+    const resultsPlaceholder = document.getElementById('results-placeholder-av');
     const profitsInfo = document.getElementById('profits-info');
     const hasEnoughData = valeurRachat > 0 && montantRetire > 0;
     resultsSection.hidden = !hasEnoughData;
@@ -151,4 +153,6 @@ function resetForm() {
     durationSelect.disabled = false;
     document.getElementById('duration-auto-note').innerText = '';
     calculate();
+}
+
 }

@@ -3,14 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculateur de fiscalité - Assurance Vie</title>
+    <title>finutils</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header class="app-header">
-            <h1>Fiscalité d'un rachat d'assurance vie</h1>
-            <button id="reset-button">Réinitialiser</button>
+            <h1>finutils</h1>
+            <nav class="tabs">
+                <button type="button" class="tab-button" data-tab="tab-av" aria-selected="true">Assurance vie</button>
+                <button type="button" class="tab-button" data-tab="tab-pret" aria-selected="false">Prêt immobilier</button>
+            </nav>
+        </header>
+
+        <section id="tab-av" class="tab-panel">
+        <header class="app-header">
+            <h2>Fiscalité d'un rachat d'assurance vie</h2>
+            <button id="reset-button-av" type="button" class="reset-button">Réinitialiser</button>
         </header>
         <form id="calculator-form">
             <fieldset>
@@ -101,7 +110,7 @@
                 <p class="legal-link"><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F22414" target="_blank" rel="noopener">Référence légale : service-public.fr</a></p>
             </fieldset>
         </form>
-        <p class="results-placeholder" id="results-placeholder">Renseignez le contrat ci-dessus pour voir apparaître les résultats.</p>
+        <p class="results-placeholder" id="results-placeholder-av">Renseignez le contrat ci-dessus pour voir apparaître les résultats.</p>
         <div class="results" id="results-section" hidden>
             <h2>Résultats</h2>
             <table class="results-table" id="results-table">
@@ -130,6 +139,129 @@
             </table>
             <p class="formula-note">Taxe = (gains − abattement éventuel) × taux d'imposition + gains × 17,2 % de prélèvements sociaux.</p>
         </div>
+        </section>
+
+        <section id="tab-pret" class="tab-panel" hidden>
+        <header class="app-header">
+            <h2>Simulateur de crédit immobilier</h2>
+            <button id="reset-button-pret" type="button" class="reset-button">Réinitialiser</button>
+        </header>
+
+        <form id="loan-form">
+            <fieldset>
+                <legend>Projet</legend>
+                <div class="form-group">
+                    <label for="price">Prix du bien :</label>
+                    <div class="input-with-suffix">
+                        <input type="number" id="price" min="0" step="1000">
+                        <span aria-hidden="true">€</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Type de bien :</label>
+                    <div class="toggle-group" id="isNew-toggle">
+                        <label>
+                            <input type="radio" name="isNew" value="ancien" checked>
+                            <span>Ancien</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="isNew" value="neuf">
+                            <span>Neuf</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="works">Coût des travaux à financer (optionnel) :</label>
+                    <div class="input-with-suffix">
+                        <input type="number" id="works" min="0" step="1000">
+                        <span aria-hidden="true">€</span>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Financement</legend>
+                <div class="form-group">
+                    <div class="calculated-value">
+                        <span class="calculated-label">Coût à financer :</span>
+                        <span class="calculated-amount">
+                            <output id="financingAmount" aria-label="Coût à financer"></output>
+                            <span id="financingUnit" aria-hidden="true" hidden>€</span>
+                        </span>
+                    </div>
+                    <p class="formula-note">Prix du bien + travaux + frais de notaire - apport.</p>
+                </div>
+                <div class="form-group">
+                    <label for="downPayment">Apport (recommandé au moins 10% du prix du bien) :</label>
+                    <div class="input-with-suffix">
+                        <input type="number" id="downPayment" min="0" step="1000">
+                        <span aria-hidden="true">€</span>
+                    </div>
+                </div>
+                <p id="warning" class="warning" aria-live="polite"></p>
+            </fieldset>
+
+            <fieldset>
+                <legend>Crédit</legend>
+                <div class="form-group">
+                    <label for="duration">Durée du crédit en années :</label>
+                    <div class="range-input">
+                        <input type="range" id="duration" min="1" max="25" value="20">
+                        <output for="duration" id="durationValue">20 ans</output>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="rate">Taux d'intérêt annuel :</label>
+                    <div class="input-with-suffix">
+                        <input type="number" id="rate" step="0.05" min="0">
+                        <span aria-hidden="true">%</span>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+
+        <p class="results-placeholder" id="results-placeholder-pret">Renseignez les informations obligatoires ci-dessus pour voir apparaître les résultats.</p>
+        <div id="results" class="results" hidden>
+            <h2>Résultats</h2>
+            <table class="results-table">
+                <tbody>
+                    <tr>
+                        <th>Prix du bien</th>
+                        <td id="resultPrice"></td>
+                    </tr>
+                    <tr id="resultWorksRow" hidden>
+                        <th>Coût des travaux</th>
+                        <td><span class="operator">+</span><span id="resultWorks"></span></td>
+                    </tr>
+                    <tr>
+                        <th><span id="notaryFeesLabel">Frais de notaire estimés</span></th>
+                        <td><span class="operator">+</span><span id="notaryFees"></span></td>
+                    </tr>
+                    <tr>
+                        <th><span id="resultDownPaymentLabel">Apport</span></th>
+                        <td><span class="operator">−</span><span id="resultDownPayment"></span></td>
+                    </tr>
+                    <tr>
+                        <th>Coût à financer</th>
+                        <td><span class="operator">=</span><span id="loanAmount"></span></td>
+                    </tr>
+                    <tr>
+                        <th>Coût du crédit</th>
+                        <td><span class="operator">+</span><span id="totalCreditCost"></span></td>
+                    </tr>
+                    <tr>
+                        <th>Coût total de l'opération</th>
+                        <td><span class="operator">=</span><span id="totalCost"></span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="monthly-summary">
+                <span class="monthly-label">Mensualité sur <span id="monthlyDuration">20 ans</span> :</span>
+                <span class="monthly-value"><strong id="monthlyPayment"></strong> / mois pendant <span id="monthlyCount">240 mois</span>.</span>
+            </p>
+            <p class="assumption-note">Simulation simplifiée, hors assurance emprunteur et hors frais annexes éventuels.</p>
+        </div>
+        </section>
     </div>
     <script type="module" src="script.js"></script>
 </body>

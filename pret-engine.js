@@ -2,6 +2,16 @@ import { NOTARY_FEE_RATE } from './loan-defaults.js';
 
 let hasEditedDownPayment = false;
 
+function formatCurrency(value) {
+  return value.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+}
+
+function formatAmount(value) {
+  return value.toLocaleString('fr-FR', { maximumFractionDigits: 0 });
+}
+
+export function initPret() {
+
 const priceInput = document.getElementById('price');
 const downPaymentInput = document.getElementById('downPayment');
 const isNewInputs = document.querySelectorAll('input[name="isNew"]');
@@ -12,7 +22,7 @@ const rateInput = document.getElementById('rate');
 const durationInput = document.getElementById('duration');
 const durationValue = document.getElementById('durationValue');
 const warningEl = document.getElementById('warning');
-const resetButton = document.getElementById('reset-button');
+const resetButton = document.getElementById('reset-button-pret');
 const resultPriceEl = document.getElementById('resultPrice');
 const resultWorksRow = document.getElementById('resultWorksRow');
 const resultWorksEl = document.getElementById('resultWorks');
@@ -26,14 +36,6 @@ const monthlyDurationEl = document.getElementById('monthlyDuration');
 const monthlyCountEl = document.getElementById('monthlyCount');
 const totalCreditCostEl = document.getElementById('totalCreditCost');
 const totalCostEl = document.getElementById('totalCost');
-
-function formatCurrency(value) {
-  return value.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
-}
-
-function formatAmount(value) {
-  return value.toLocaleString('fr-FR', { maximumFractionDigits: 0 });
-}
 
 function getSelectedIsNewValue() {
   const selected = document.querySelector('input[name="isNew"]:checked');
@@ -89,7 +91,7 @@ function calculate() {
     && rateInput.value !== ''
     && sanitizedRate >= 0;
   const resultsSection = document.getElementById('results');
-  const resultsPlaceholder = document.getElementById('results-placeholder');
+  const resultsPlaceholder = document.getElementById('results-placeholder-pret');
   resultsSection.hidden = !hasEnoughData;
   resultsPlaceholder.hidden = hasEnoughData;
   if (!hasEnoughData) {
@@ -112,10 +114,10 @@ function calculate() {
   resultPriceEl.textContent = formatCurrency(sanitizedPrice);
   resultWorksRow.hidden = sanitizedWorks === 0;
   resultWorksEl.textContent = formatCurrency(sanitizedWorks);
-  document.querySelectorAll('.results-table tbody tr').forEach((row) => {
+  document.querySelectorAll('#tab-pret .results-table tbody tr').forEach((row) => {
     row.classList.remove('stripe-odd', 'stripe-even');
   });
-  [...document.querySelectorAll('.results-table tbody tr')]
+  [...document.querySelectorAll('#tab-pret .results-table tbody tr')]
     .filter((row) => !row.hidden)
     .forEach((row, index) => row.classList.add(index % 2 === 0 ? 'stripe-odd' : 'stripe-even'));
   resultDownPaymentEl.textContent = formatCurrency(sanitizedDownPayment);
@@ -154,3 +156,5 @@ resetButton.addEventListener('click', () => {
 });
 
 calculate();
+
+}
