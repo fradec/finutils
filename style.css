@@ -141,16 +141,12 @@ label {
     color: var(--color-text-muted);
 }
 
-.checkbox-group label, .radio-group label {
+.checkbox-group label {
     display: inline-flex;
     align-items: center;
     gap: 6px;
     font-weight: normal;
     color: var(--color-text);
-}
-
-.radio-group label {
-    margin-right: 20px;
 }
 
 .toggle-group {
@@ -369,21 +365,6 @@ select:disabled {
 }
 
 /* --- Prêt immobilier --- */
-
-input[readonly] {
-    background-color: var(--color-bg);
-    color: var(--color-text-muted);
-}
-
-input[type="number"][readonly]::-webkit-inner-spin-button,
-input[type="number"][readonly]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-input[type="number"][readonly] {
-    -moz-appearance: textfield;
-}
 
 .calculated-value {
     margin: 14px 0 0;
