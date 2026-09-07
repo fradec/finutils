@@ -1,6 +1,6 @@
 # finutils
 
-Outils simples de simulation financière, réunis sur une seule page à onglets. Aucune dépendance ni build : ouvrir `index.html` via un petit serveur local (`python3 -m http.server`) suffit.
+Outils simples de simulation financière, présentés sur une seule page à onglets. Aucune dépendance ni build : ouvrir `index.html` via un petit serveur local (`python3 -m http.server`) suffit.
 
 ## Outils disponibles
 
