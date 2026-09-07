@@ -10,16 +10,14 @@
     <div class="container">
         <header class="app-header">
             <nav class="tabs">
-                <button type="button" class="tab-button" data-tab="tab-av" aria-selected="true">Assurance vie</button>
-                <button type="button" class="tab-button" data-tab="tab-pret" aria-selected="false">Prêt immobilier</button>
+                <button type="button" class="tab-button" data-tab="tab-av" aria-selected="true">Fiscalité d'un rachat d'assurance vie</button>
+                <button type="button" class="tab-button" data-tab="tab-pret" aria-selected="false">Simulateur de crédit immobilier</button>
             </nav>
+            <button id="reset-button-av" type="button" class="reset-button" aria-label="Réinitialiser Assurance vie" title="Réinitialiser">↺</button>
+            <button id="reset-button-pret" type="button" class="reset-button" aria-label="Réinitialiser Prêt immobilier" title="Réinitialiser" hidden>↺</button>
         </header>
 
         <section id="tab-av" class="tab-panel">
-        <header class="app-header">
-            <h2>Fiscalité d'un rachat d'assurance vie</h2>
-            <button id="reset-button-av" type="button" class="reset-button">Réinitialiser</button>
-        </header>
         <form id="calculator-form">
             <fieldset>
                 <legend>Contrat</legend>
@@ -141,11 +139,6 @@
         </section>
 
         <section id="tab-pret" class="tab-panel" hidden>
-        <header class="app-header">
-            <h2>Simulateur de crédit immobilier</h2>
-            <button id="reset-button-pret" type="button" class="reset-button">Réinitialiser</button>
-        </header>
-
         <form id="loan-form">
             <fieldset>
                 <legend>Projet</legend>
