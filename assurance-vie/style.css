@@ -1,0 +1,309 @@
+:root {
+    --color-bg: #f2f4f7;
+    --color-surface: #ffffff;
+    --color-border: #e2e5ea;
+    --color-text: #1f2937;
+    --color-text-muted: #667085;
+    --color-primary: #2563eb;
+    --color-primary-dark: #1d4ed8;
+    --color-success: #15803d;
+    --color-success-bg: #ecfdf3;
+    --color-danger: #dc2626;
+    --color-danger-bg: #fef2f2;
+    --radius: 10px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    margin: 0;
+    padding: 40px 16px;
+}
+
+.container {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    background-color: var(--color-surface);
+    padding: 28px;
+    border-radius: var(--radius);
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06), 0 8px 24px rgba(16, 24, 40, 0.05);
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+h1 {
+    font-size: 1.35rem;
+    margin: 0;
+}
+
+h2 {
+    font-size: 1.05rem;
+    margin: 0 0 12px;
+}
+
+button#reset-button {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    background-color: transparent;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button#reset-button:hover {
+    background-color: var(--color-bg);
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+}
+
+fieldset {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    margin-bottom: 18px;
+    padding: 18px;
+}
+
+legend {
+    font-weight: 600;
+    padding: 0 8px;
+    color: var(--color-primary-dark);
+}
+
+.form-group {
+    margin-bottom: 14px;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: var(--color-text-muted);
+}
+
+.checkbox-group label, .radio-group label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: normal;
+    color: var(--color-text);
+}
+
+.radio-group label {
+    margin-right: 20px;
+}
+
+.toggle-group {
+    display: flex;
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    flex-wrap: wrap;
+}
+
+.toggle-group label {
+    flex: 1 1 80px;
+    margin: 0;
+    padding: 8px 14px;
+    font-size: 14px;
+    text-align: center;
+    color: var(--color-text);
+    cursor: pointer;
+    background-color: var(--color-bg);
+    border-right: 1px solid var(--color-border);
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.toggle-group label:last-child {
+    border-right: none;
+}
+
+.toggle-group input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.toggle-group input:checked + span {
+    font-weight: 600;
+}
+
+.toggle-group label:has(input:checked) {
+    background-color: var(--color-primary);
+    color: #fff;
+}
+
+.toggle-group label:has(input:disabled) {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.legal-link {
+    margin: 12px 0 0;
+    font-size: 12px;
+}
+
+.legal-link a {
+    color: var(--color-text-muted);
+}
+
+.auto-note {
+    margin: 6px 0 0;
+    font-size: 12px;
+    color: var(--color-success);
+}
+
+select:disabled {
+    background-color: var(--color-bg);
+    color: var(--color-text-muted);
+}
+
+.abattement-note {
+    margin: 10px 0 0;
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+input[type="number"], input[type="date"], select {
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--color-text);
+    background-color: var(--color-surface);
+}
+
+input[type="number"]:focus, input[type="date"]:focus, select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.input-with-suffix {
+    position: relative;
+    width: 100%;
+}
+
+.input-with-suffix input {
+    padding-right: 34px;
+}
+
+.input-with-suffix span {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+    font-size: 14px;
+    pointer-events: none;
+}
+
+/* Valeur calculée automatiquement, présentée comme une information et non comme un champ de saisie. */
+.info-note {
+    margin: 0 0 14px;
+    padding: 10px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background-color: var(--color-bg);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+}
+
+.info-note[hidden] {
+    display: none;
+}
+
+.info-note strong {
+    color: var(--color-text);
+    font-size: 14px;
+}
+
+.info-note.is-positive {
+    border-color: var(--color-success);
+    background-color: var(--color-success-bg);
+}
+
+.info-note.is-positive strong {
+    color: var(--color-success);
+}
+
+.info-note.is-negative {
+    border-color: var(--color-danger);
+    background-color: var(--color-danger-bg);
+    color: var(--color-danger);
+}
+
+.results {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-top: 18px;
+}
+
+.results h2 {
+    color: var(--color-primary-dark);
+}
+
+.results-placeholder {
+    margin-top: 18px;
+    padding: 16px;
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius);
+    color: var(--color-text-muted);
+    font-size: 14px;
+    text-align: center;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.results-table th, .results-table td {
+    padding: 12px;
+    border: 1px solid var(--color-border);
+    text-align: left;
+}
+
+.results-table th {
+    background-color: var(--color-bg);
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+.results-table tbody tr.best-option {
+    background-color: var(--color-success-bg);
+    font-weight: 600;
+}
+
+.results-table tbody tr.best-option td:last-child {
+    color: var(--color-success);
+}
+
+.formula-note {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--color-text-muted);
+}
