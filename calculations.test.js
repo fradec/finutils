@@ -284,6 +284,38 @@ test('durée nulle : mensualité finie sur un mois', () => {
     assertClose(loan.monthlyPayment, loan.loanAmount);
 });
 
+test('assurance emprunteur : prime mensuelle calculée sur le capital initial', () => {
+    const loan = computeLoan({
+        price: 200000,
+        works: 0,
+        downPayment: 20000,
+        rate: 0,
+        durationYears: 20,
+        isNew: 'ancien',
+        insuranceRate: 0.3,
+    });
+    assertClose(loan.monthlyInsurance, 49); // 196 000 € x 0,3 % / 12
+    assertClose(loan.insuranceCost, 11760); // 49 € x 240 mois
+    assertClose(loan.monthlyPaymentWithInsurance, 196000 / 240 + 49);
+    assertClose(loan.totalCreditCost, 11760);
+    assertClose(loan.totalCostWithCredit, 216000 + 11760);
+});
+
+test("assurance emprunteur : s'ajoute aux intérêts du crédit", () => {
+    const loan = computeLoan({
+        price: 300000,
+        works: 0,
+        downPayment: 33000,
+        rate: 3,
+        durationYears: 20,
+        isNew: 'ancien',
+        insuranceRate: 0.3,
+    });
+    assertClose(loan.interestCost, loan.monthlyPayment * loan.totalMonths - loan.loanAmount);
+    assertClose(loan.totalCreditCost, loan.interestCost + loan.insuranceCost);
+    assert.ok(loan.monthlyPaymentWithInsurance > loan.monthlyPayment);
+});
+
 test('entrées négatives : ramenées à zéro', () => {
     const loan = computeLoan({
         price: -100000,
@@ -292,6 +324,7 @@ test('entrées négatives : ramenées à zéro', () => {
         rate: -1,
         durationYears: -5,
         isNew: 'neuf',
+        insuranceRate: -0.5,
     });
     assert.equal(loan.notaryFees, 0);
     assert.equal(loan.totalCost, 0);
@@ -299,4 +332,5 @@ test('entrées négatives : ramenées à zéro', () => {
     assert.equal(loan.downPaymentRate, 0);
     assert.equal(loan.totalMonths, 1);
     assert.equal(loan.monthlyPayment, 0);
+    assert.equal(loan.insuranceCost, 0);
 });

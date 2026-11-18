@@ -101,12 +101,13 @@ export function computeAvResult({
 }
 
 // Simulateur de crédit immobilier (coût à financer, mensualité, coût total).
-export function computeLoan({ price, works, downPayment, rate, durationYears, isNew }) {
+export function computeLoan({ price, works, downPayment, rate, durationYears, isNew, insuranceRate = 0 }) {
     // Borne les entrées pour éviter des montants négatifs ou une durée nulle.
     const prix = Math.max(0, price);
     const travaux = Math.max(0, works);
     const apport = Math.max(0, downPayment);
     const tauxAnnuel = Math.max(0, rate);
+    const tauxAssurance = Math.max(0, insuranceRate);
 
     const notaryFeesRate = NOTARY_FEE_RATE[isNew] ?? NOTARY_FEE_RATE.ancien;
     const notaryFees = prix * notaryFeesRate;
@@ -120,7 +121,12 @@ export function computeLoan({ price, works, downPayment, rate, durationYears, is
         loanAmount > 0 && monthlyRate > 0
             ? (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -totalMonths))
             : loanAmount / totalMonths;
-    const totalCreditCost = monthlyPayment * totalMonths - loanAmount;
+    const interestCost = monthlyPayment * totalMonths - loanAmount;
+
+    // Assurance emprunteur : prime mensuelle calculée sur le capital initialement emprunté.
+    const monthlyInsurance = (loanAmount * tauxAssurance) / 100 / 12;
+    const insuranceCost = monthlyInsurance * totalMonths;
+    const totalCreditCost = interestCost + insuranceCost;
 
     return {
         notaryFeesRate,
@@ -129,7 +135,11 @@ export function computeLoan({ price, works, downPayment, rate, durationYears, is
         loanAmount,
         downPaymentRate,
         monthlyPayment,
+        monthlyPaymentWithInsurance: monthlyPayment + monthlyInsurance,
+        monthlyInsurance,
         totalMonths,
+        interestCost,
+        insuranceCost,
         totalCreditCost,
         totalCostWithCredit: totalCost + totalCreditCost,
     };

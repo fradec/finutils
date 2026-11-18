@@ -13,6 +13,7 @@ export function initPret() {
     const financingAmountInput = document.getElementById('financingAmount');
     const financingUnit = document.getElementById('financingUnit');
     const rateInput = document.getElementById('rate');
+    const insuranceRateInput = document.getElementById('insuranceRate');
     const durationInput = document.getElementById('duration');
     const durationValue = document.getElementById('durationValue');
     const warningEl = document.getElementById('warning');
@@ -32,6 +33,10 @@ export function initPret() {
     const monthlyCountEl = document.getElementById('monthlyCount');
     const totalCreditCostEl = document.getElementById('totalCreditCost');
     const totalCostEl = document.getElementById('totalCost');
+    const creditBreakdownEl = document.getElementById('credit-breakdown');
+    const monthlyPaymentLabelEl = document.getElementById('monthlyPaymentLabel');
+    const insuranceSummaryEl = document.getElementById('insuranceSummary');
+    const monthlyPaymentWithInsuranceEl = document.getElementById('monthlyPaymentWithInsurance');
 
     function getSelectedIsNewValue() {
         const selected = document.querySelector('input[name="isNew"]:checked');
@@ -43,6 +48,7 @@ export function initPret() {
         const sanitizedWorks = Math.max(Number(worksInput.value) || 0, 0);
         const sanitizedDownPayment = Math.max(Number(downPaymentInput.value) || 0, 0);
         const sanitizedRate = Math.max(Number(rateInput.value) || 0, 0);
+        const sanitizedInsuranceRate = Math.max(Number(insuranceRateInput.value) || 0, 0);
         const sanitizedDuration = Math.min(Math.max(Number(durationInput.value) || 1, 1), 25);
         durationValue.value = `${sanitizedDuration} an${sanitizedDuration > 1 ? 's' : ''}`;
 
@@ -56,8 +62,10 @@ export function initPret() {
                   rate: sanitizedRate,
                   durationYears: sanitizedDuration,
                   isNew: isNewValue,
+                  insuranceRate: sanitizedInsuranceRate,
               })
             : null;
+        const hasInsurance = loan ? loan.insuranceCost > 0 : false;
 
         if (loan) {
             financingAmountInput.value = formatAmount(loan.loanAmount);
@@ -106,6 +114,16 @@ export function initPret() {
         monthlyCountEl.textContent = `${loan.totalMonths} mois`;
         totalCreditCostEl.textContent = formatEUR(loan.totalCreditCost);
         totalCostEl.textContent = formatEUR(loan.totalCostWithCredit);
+
+        monthlyPaymentLabelEl.textContent = hasInsurance ? 'Mensualité hors assurance' : 'Mensualité';
+        insuranceSummaryEl.hidden = !hasInsurance;
+        if (hasInsurance) {
+            monthlyPaymentWithInsuranceEl.textContent = formatEUR(loan.monthlyPaymentWithInsurance);
+        }
+        creditBreakdownEl.hidden = !hasInsurance;
+        if (hasInsurance) {
+            creditBreakdownEl.textContent = `Coût du crédit : ${formatEUR(loan.interestCost)} d'intérêts + ${formatEUR(loan.insuranceCost)} d'assurance emprunteur.`;
+        }
     }
 
     downPaymentInput.addEventListener('input', () => {
@@ -120,7 +138,7 @@ export function initPret() {
         calculate();
     });
 
-    [worksInput, rateInput, durationInput].forEach((el) => {
+    [worksInput, rateInput, insuranceRateInput, durationInput].forEach((el) => {
         el.addEventListener('input', calculate);
     });
 

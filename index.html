@@ -289,6 +289,14 @@
                                 <span aria-hidden="true">%</span>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label for="insuranceRate">Taux d'assurance emprunteur annuel (optionnel) :</label>
+                            <div class="input-with-suffix">
+                                <input type="number" id="insuranceRate" step="0.01" min="0" placeholder="0.30" />
+                                <span aria-hidden="true">%</span>
+                            </div>
+                            <p class="formula-note">Calculée sur le capital emprunté initial.</p>
+                        </div>
                     </fieldset>
                 </form>
 
@@ -329,15 +337,23 @@
                             </tr>
                         </tbody>
                     </table>
+                    <p class="formula-note" id="credit-breakdown" hidden></p>
                     <p class="monthly-summary">
-                        <span class="monthly-label">Mensualité sur <span id="monthlyDuration">20 ans</span> :</span>
+                        <span class="monthly-label"
+                            ><span id="monthlyPaymentLabel">Mensualité</span> sur
+                            <span id="monthlyDuration">20 ans</span> :</span
+                        >
                         <span class="monthly-value"
                             ><strong id="monthlyPayment"></strong> / mois pendant
                             <span id="monthlyCount">240 mois</span>.</span
                         >
+                        <span class="monthly-extra" id="insuranceSummary" hidden
+                            >Assurance comprise : <strong id="monthlyPaymentWithInsurance"></strong> / mois.</span
+                        >
                     </p>
                     <p class="assumption-note">
-                        Simulation simplifiée, hors assurance emprunteur et hors frais annexes éventuels.
+                        Assurance emprunteur calculée sur le capital initial. Simulation indicative, hors frais de
+                        dossier et de garantie.
                     </p>
                 </div>
             </section>
