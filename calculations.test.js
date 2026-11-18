@@ -69,9 +69,72 @@ test('seuil de 150 000 € dépassé après réforme : taux forfaitaire majoré'
         situation: 'couple',
         exonere: false,
     });
-    // gains 50 000, abattement couple 9 200 => base imposable 40 800
-    assertClose(result.taxForfaitaire, 40800 * 0.128 + 50000 * 0.172);
+    // gains 50 000 ; fraction à 7,5 % = 50 000 x 150 000/200 000 = 37 500, le reste (12 500) à 12,8 %.
+    // L'abattement couple (9 200) s'impute d'abord sur la fraction à 7,5 %.
+    assertClose(result.taxForfaitaire, 28300 * 0.075 + 12500 * 0.128 + 50000 * 0.172);
+    assertClose(result.taxIntegration, 50000 * 0.172); // barème : TMI 0 % sur les gains après abattement
     assert.equal(result.meilleureOption, 'integration'); // TMI à 0 % reste imbattable
+});
+
+test('seuil de 150 000 € atteint : la totalité des gains reste à 7,5 %', () => {
+    const result = computeAvResult({
+        primesVersees: 150000,
+        valeurRachat: 200000,
+        montantRetire: 200000,
+        duration: '8+',
+        avantReforme: false,
+        tmi: 30,
+        situation: 'seul',
+        exonere: false,
+    });
+    // gains 50 000, abattement 4 600 => 45 400 entièrement au taux réduit
+    assertClose(result.taxForfaitaire, 45400 * 0.075 + 50000 * 0.172);
+});
+
+test("l'abattement s'impute d'abord sur la fraction à 7,5 %, puis sur celle à 12,8 %", () => {
+    const result = computeAvResult({
+        primesVersees: 1000000,
+        valeurRachat: 1010000,
+        montantRetire: 1010000,
+        duration: '8+',
+        avantReforme: false,
+        tmi: 30,
+        situation: 'seul',
+        exonere: false,
+    });
+    // gains 10 000 ; fraction à 7,5 % = 1 500, fraction à 12,8 % = 8 500.
+    // Les 4 600 d'abattement absorbent les 1 500, le reliquat (3 100) s'impute sur la fraction à 12,8 %.
+    assertClose(result.taxForfaitaire, (8500 - 3100) * 0.128 + 10000 * 0.172);
+});
+
+test('rachat avant 8 ans après réforme : 12,8 % sur tous les gains, sans abattement', () => {
+    const result = computeAvResult({
+        primesVersees: 100000,
+        valeurRachat: 120000,
+        montantRetire: 120000,
+        duration: '4-8',
+        avantReforme: false,
+        tmi: 41,
+        situation: 'couple',
+        exonere: false,
+    });
+    // gains 20 000, aucun abattement avant 8 ans
+    assertClose(result.taxForfaitaire, 20000 * 0.128 + 20000 * 0.172);
+});
+
+test('primes antérieures à la réforme après 8 ans : 7,5 % sur tous les gains, sans seuil', () => {
+    const result = computeAvResult({
+        primesVersees: 400000,
+        valeurRachat: 500000,
+        montantRetire: 500000,
+        duration: '8+',
+        avantReforme: true,
+        tmi: 30,
+        situation: 'seul',
+        exonere: false,
+    });
+    // gains 100 000, abattement 4 600 => 95 400 à 7,5 %, aucune fraction à 12,8 %
+    assertClose(result.taxForfaitaire, 95400 * 0.075 + 100000 * 0.172);
 });
 
 test('primes versées avant le 27/09/2017 : taux forfaitaire historique', () => {
