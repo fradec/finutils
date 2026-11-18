@@ -20,7 +20,7 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background-color: var(--color-bg);
     color: var(--color-text);
     margin: 0;
@@ -34,7 +34,9 @@ body {
     background-color: var(--color-surface);
     padding: 28px;
     border-radius: var(--radius);
-    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06), 0 8px 24px rgba(16, 24, 40, 0.05);
+    box-shadow:
+        0 1px 3px rgba(16, 24, 40, 0.06),
+        0 8px 24px rgba(16, 24, 40, 0.05);
 }
 
 .app-header {
@@ -70,14 +72,16 @@ h2 {
     font-weight: 600;
     cursor: pointer;
     text-align: center;
-    transition: color 0.15s ease, border-color 0.15s ease;
+    transition:
+        color 0.15s ease,
+        border-color 0.15s ease;
 }
 
 .tab-button:hover {
     color: var(--color-text);
 }
 
-.tab-button[aria-selected="true"] {
+.tab-button[aria-selected='true'] {
     color: var(--color-primary-dark);
     border-bottom-color: var(--color-primary);
 }
@@ -168,7 +172,9 @@ label {
     cursor: pointer;
     background-color: var(--color-bg);
     border-right: 1px solid var(--color-border);
-    transition: background-color 0.15s ease, color 0.15s ease;
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
 }
 
 .toggle-group label:last-child {
@@ -195,7 +201,9 @@ label {
     opacity: 0.6;
 }
 
-input[type="number"], input[type="date"], select {
+input[type='number'],
+input[type='date'],
+select {
     width: 100%;
     padding: 9px 10px;
     border: 1px solid var(--color-border);
@@ -205,7 +213,9 @@ input[type="number"], input[type="date"], select {
     background-color: var(--color-surface);
 }
 
-input[type="number"]:focus, input[type="date"]:focus, select:focus {
+input[type='number']:focus,
+input[type='date']:focus,
+select:focus {
     outline: none;
     border-color: var(--color-primary);
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
@@ -342,7 +352,8 @@ select:disabled {
     color: var(--color-danger);
 }
 
-#tab-av .results-table th, #tab-av .results-table td {
+#tab-av .results-table th,
+#tab-av .results-table td {
     padding: 12px;
     border: 1px solid var(--color-border);
     text-align: left;
@@ -501,4 +512,3 @@ select:disabled {
 .warning:empty {
     display: none;
 }
-

@@ -9,9 +9,18 @@ import {
 } from './constants.js';
 
 // Fiscalité d'un rachat d'assurance vie (barème progressif vs. prélèvement forfaitaire).
-export function computeAvResult({ primesVersees, valeurRachat, montantRetire, duration, avantReforme, tmi, situation, exonere }) {
+export function computeAvResult({
+    primesVersees,
+    valeurRachat,
+    montantRetire,
+    duration,
+    avantReforme,
+    tmi,
+    situation,
+    exonere,
+}) {
     // Quote-part de gains afférente au montant retiré (art. 125-0 A CGI), ramenée à la valeur de rachat totale.
-    const gains = Math.max(0, montantRetire * (valeurRachat - primesVersees) / valeurRachat);
+    const gains = Math.max(0, (montantRetire * (valeurRachat - primesVersees)) / valeurRachat);
     const plusValue = gains > 0;
     // Prélèvements sociaux : dus sur la totalité des gains, sans abattement, même en cas d'exonération d'IR.
     const prelevementsSociaux = gains * TAUX_PRELEVEMENTS_SOCIAUX;
@@ -33,8 +42,10 @@ export function computeAvResult({ primesVersees, valeurRachat, montantRetire, du
     const tauxForfaitaire = avantReforme
         ? TAUX_FORFAITAIRE.avantReforme[duration]
         : duration === '8+'
-            ? (primesVersees <= SEUIL_PRIMES_REDUIT ? TAUX_FORFAITAIRE.apresReforme['8+sousSeuil'] : TAUX_FORFAITAIRE.apresReforme['8+surSeuil'])
-            : TAUX_FORFAITAIRE.apresReforme[duration];
+          ? primesVersees <= SEUIL_PRIMES_REDUIT
+              ? TAUX_FORFAITAIRE.apresReforme['8+sousSeuil']
+              : TAUX_FORFAITAIRE.apresReforme['8+surSeuil']
+          : TAUX_FORFAITAIRE.apresReforme[duration];
 
     const taxIntegration = baseImposable * (tmi / 100) + prelevementsSociaux;
     const taxForfaitaire = baseImposable * tauxForfaitaire + prelevementsSociaux;
@@ -61,9 +72,10 @@ export function computeLoan({ price, works, downPayment, rate, durationYears, is
 
     const monthlyRate = rate / 100 / 12;
     const totalMonths = durationYears * 12;
-    const monthlyPayment = loanAmount > 0 && monthlyRate > 0
-        ? (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -totalMonths))
-        : loanAmount / totalMonths;
+    const monthlyPayment =
+        loanAmount > 0 && monthlyRate > 0
+            ? (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -totalMonths))
+            : loanAmount / totalMonths;
     const totalCreditCost = monthlyPayment * totalMonths - loanAmount;
 
     return {

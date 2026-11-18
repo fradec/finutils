@@ -38,7 +38,11 @@ export function initAv() {
 
     dateSouscriptionInput.max = new Date().toISOString().split('T')[0];
 
-    const dateReforme = new Date(DATE_REFORME).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    const dateReforme = new Date(DATE_REFORME).toLocaleDateString('fr-FR', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+    });
     dateReformeLabelEl.innerText = `Primes versées avant le ${dateReforme}`;
 
     const casExoneration = CAS_EXONERATION.map((cas) => cas.charAt(0).toLowerCase() + cas.slice(1)).join(', ');
@@ -49,15 +53,25 @@ export function initAv() {
     calculatorForm.addEventListener('input', calculate);
     resetButton.addEventListener('click', resetForm);
 
-    rachatTypeRadios.forEach((radio) => radio.addEventListener('change', () => {
-        partielFields.hidden = document.querySelector('input[name="rachat-type"]:checked').value !== 'partiel';
-    }));
+    rachatTypeRadios.forEach((radio) =>
+        radio.addEventListener('change', () => {
+            partielFields.hidden = document.querySelector('input[name="rachat-type"]:checked').value !== 'partiel';
+        }),
+    );
 
     // L'abattement (et le choix seul/couple qui en double le montant) ne concerne que les contrats de plus de 8 ans.
     const durationSelect = {
-        get value() { return document.querySelector('input[name="duration"]:checked').value; },
-        set value(v) { document.querySelector(`input[name="duration"][value="${v}"]`).checked = true; },
-        set disabled(v) { durationRadios.forEach((radio) => { radio.disabled = v; }); },
+        get value() {
+            return document.querySelector('input[name="duration"]:checked').value;
+        },
+        set value(v) {
+            document.querySelector(`input[name="duration"][value="${v}"]`).checked = true;
+        },
+        set disabled(v) {
+            durationRadios.forEach((radio) => {
+                radio.disabled = v;
+            });
+        },
     };
     function updateAbattementVisibility() {
         abattementFields.hidden = durationSelect.value !== '8+';
@@ -104,7 +118,7 @@ export function initAv() {
         const primesVersees = parseFloat(valueBInput.value) || 0;
         const valeurRachat = parseFloat(valueAInput.value) || 0;
         const rachatPartiel = document.querySelector('input[name="rachat-type"]:checked').value === 'partiel';
-        const montantRetire = rachatPartiel ? (parseFloat(montantRetireInput.value) || 0) : valeurRachat;
+        const montantRetire = rachatPartiel ? parseFloat(montantRetireInput.value) || 0 : valeurRachat;
 
         const hasEnoughData = valeurRachat > 0 && montantRetire > 0;
         resultsSection.hidden = !hasEnoughData;
@@ -120,7 +134,16 @@ export function initAv() {
         const situation = document.querySelector('input[name="situation"]:checked').value;
         const exonere = exonerationCheckbox.checked;
 
-        const result = computeAvResult({ primesVersees, valeurRachat, montantRetire, duration, avantReforme, tmi, situation, exonere });
+        const result = computeAvResult({
+            primesVersees,
+            valeurRachat,
+            montantRetire,
+            duration,
+            avantReforme,
+            tmi,
+            situation,
+            exonere,
+        });
 
         // Une moins-value sur assurance vie n'ouvre droit à aucune imputation ni report (BOI-RPPM-RCM-20-10-20-50).
         profitsLabelEl.innerText = result.plusValue

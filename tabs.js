@@ -11,10 +11,16 @@ const resetButtons = {
 };
 
 export function initTabs() {
-    tabButtons.forEach((button) => button.addEventListener('click', () => {
-        const target = button.dataset.tab;
-        tabButtons.forEach((b) => b.setAttribute('aria-selected', String(b === button)));
-        Object.entries(panels).forEach(([name, panel]) => { panel.hidden = name !== target; });
-        Object.entries(resetButtons).forEach(([name, resetButton]) => { resetButton.hidden = name !== target; });
-    }));
+    tabButtons.forEach((button) =>
+        button.addEventListener('click', () => {
+            const target = button.dataset.tab;
+            tabButtons.forEach((b) => b.setAttribute('aria-selected', String(b === button)));
+            Object.entries(panels).forEach(([name, panel]) => {
+                panel.hidden = name !== target;
+            });
+            Object.entries(resetButtons).forEach(([name, resetButton]) => {
+                resetButton.hidden = name !== target;
+            });
+        }),
+    );
 }

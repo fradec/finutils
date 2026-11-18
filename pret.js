@@ -47,18 +47,16 @@ export function initPret() {
         durationValue.value = `${sanitizedDuration} an${sanitizedDuration > 1 ? 's' : ''}`;
 
         const isNewValue = getSelectedIsNewValue();
-        const hasFinancingData = sanitizedPrice > 0
-            && downPaymentInput.value !== ''
-            && isNewValue !== null;
+        const hasFinancingData = sanitizedPrice > 0 && downPaymentInput.value !== '' && isNewValue !== null;
         const loan = hasFinancingData
             ? computeLoan({
-                price: sanitizedPrice,
-                works: sanitizedWorks,
-                downPayment: sanitizedDownPayment,
-                rate: sanitizedRate,
-                durationYears: sanitizedDuration,
-                isNew: isNewValue,
-            })
+                  price: sanitizedPrice,
+                  works: sanitizedWorks,
+                  downPayment: sanitizedDownPayment,
+                  rate: sanitizedRate,
+                  durationYears: sanitizedDuration,
+                  isNew: isNewValue,
+              })
             : null;
 
         if (loan) {
@@ -69,7 +67,8 @@ export function initPret() {
             warningEl.className = 'warning';
             if (sanitizedDownPayment > loan.totalCost) {
                 warningEl.className = 'warning warning-danger';
-                warningEl.textContent = "L'apport dépasse le coût total de l'opération. Vous pouvez le réduire pour obtenir un scénario plus réaliste.";
+                warningEl.textContent =
+                    "L'apport dépasse le coût total de l'opération. Vous pouvez le réduire pour obtenir un scénario plus réaliste.";
             } else if (loan.downPaymentRate < 10) {
                 warningEl.className = 'warning warning-info';
                 warningEl.textContent = `Votre apport représente ${loan.downPaymentRate}% du prix du bien. Il est préférable d'avoir au moins 10% d'apport.`;
