@@ -237,3 +237,27 @@ test('un crédit avec intérêts coûte plus cher que le capital emprunté', () 
     assert.ok(loan.totalCreditCost > 0);
     assertClose(loan.totalCostWithCredit, loan.totalCost + loan.totalCreditCost);
 });
+
+test('durée nulle : mensualité finie sur un mois', () => {
+    const loan = computeLoan({ price: 100000, works: 0, downPayment: 0, rate: 0, durationYears: 0, isNew: 'ancien' });
+    assert.equal(loan.totalMonths, 1);
+    assert.ok(Number.isFinite(loan.monthlyPayment));
+    assertClose(loan.monthlyPayment, loan.loanAmount);
+});
+
+test('entrées négatives : ramenées à zéro', () => {
+    const loan = computeLoan({
+        price: -100000,
+        works: -5000,
+        downPayment: -10000,
+        rate: -1,
+        durationYears: -5,
+        isNew: 'neuf',
+    });
+    assert.equal(loan.notaryFees, 0);
+    assert.equal(loan.totalCost, 0);
+    assert.equal(loan.loanAmount, 0);
+    assert.equal(loan.downPaymentRate, 0);
+    assert.equal(loan.totalMonths, 1);
+    assert.equal(loan.monthlyPayment, 0);
+});
