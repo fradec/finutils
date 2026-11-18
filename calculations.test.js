@@ -335,6 +335,23 @@ test('frais de dossier et de garantie : intégrés au coût à financer', () => 
     assertClose(loan.totalCostWithCredit, 229350);
 });
 
+test('apport supérieur au coût total : aucun crédit, aucune assurance', () => {
+    const loan = computeLoan({
+        price: 100000,
+        works: 0,
+        downPayment: 200000,
+        rate: 3,
+        durationYears: 20,
+        isNew: 'ancien',
+        fees: 1500,
+        insuranceRate: 0.3,
+    });
+    assert.equal(loan.loanAmount, 0);
+    assert.equal(loan.insuranceCost, 0);
+    assert.equal(loan.totalCreditCost, 0);
+    assert.equal(loan.totalCostWithCredit, loan.totalCost);
+});
+
 test('entrées négatives : ramenées à zéro', () => {
     const loan = computeLoan({
         price: -100000,
