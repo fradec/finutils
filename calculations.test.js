@@ -137,6 +137,53 @@ test('primes antérieures à la réforme après 8 ans : 7,5 % sur tous les gains
     assertClose(result.taxForfaitaire, 95400 * 0.075 + 100000 * 0.172);
 });
 
+test('rachat supérieur à la valeur du contrat : les gains sont plafonnés', () => {
+    const result = computeAvResult({
+        primesVersees: 100000,
+        valeurRachat: 150000,
+        montantRetire: 300000,
+        duration: '8+',
+        avantReforme: false,
+        tmi: 30,
+        situation: 'seul',
+        exonere: false,
+    });
+    // Le rachat est ramené à 150 000 : gains = 150 000 - 100 000 = 50 000, et non 100 000.
+    assertClose(result.gains, 50000);
+    assertClose(result.netIntegration, 150000 - result.taxIntegration);
+});
+
+test('valeur de rachat nulle : aucun gain, aucun NaN', () => {
+    const result = computeAvResult({
+        primesVersees: 10000,
+        valeurRachat: 0,
+        montantRetire: 0,
+        duration: '0-4',
+        avantReforme: false,
+        tmi: 30,
+        situation: 'seul',
+        exonere: false,
+    });
+    assert.equal(result.gains, 0);
+    assert.equal(result.taxForfaitaire, 0);
+    assert.equal(result.netForfaitaire, 0);
+});
+
+test('montant retiré négatif : traité comme un rachat nul', () => {
+    const result = computeAvResult({
+        primesVersees: 10000,
+        valeurRachat: 15000,
+        montantRetire: -5000,
+        duration: '0-4',
+        avantReforme: false,
+        tmi: 30,
+        situation: 'seul',
+        exonere: false,
+    });
+    assert.equal(result.gains, 0);
+    assert.equal(result.netIntegration, 0);
+});
+
 test('primes versées avant le 27/09/2017 : taux forfaitaire historique', () => {
     const result = computeAvResult({
         primesVersees: 0,

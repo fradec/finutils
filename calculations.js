@@ -36,8 +36,13 @@ export function computeAvResult({
     situation,
     exonere,
 }) {
+    // Borne les entrées : un rachat ne peut être négatif ni dépasser la valeur de rachat totale.
+    const primes = Math.max(0, primesVersees);
+    const valeur = Math.max(0, valeurRachat);
+    const rachat = valeur > 0 ? Math.min(Math.max(0, montantRetire), valeur) : 0;
+
     // Quote-part de gains afférente au montant retiré (art. 125-0 A CGI), ramenée à la valeur de rachat totale.
-    const gains = Math.max(0, (montantRetire * (valeurRachat - primesVersees)) / valeurRachat);
+    const gains = valeur > 0 ? Math.max(0, (rachat * (valeur - primes)) / valeur) : 0;
     const plusValue = gains > 0;
     // Prélèvements sociaux : dus sur la totalité des gains, sans abattement, même en cas d'exonération d'IR.
     const prelevementsSociaux = gains * TAUX_PRELEVEMENTS_SOCIAUX;
@@ -48,7 +53,7 @@ export function computeAvResult({
             plusValue,
             exonere: true,
             taxIntegration: prelevementsSociaux,
-            netIntegration: montantRetire - prelevementsSociaux,
+            netIntegration: rachat - prelevementsSociaux,
         };
     }
 
@@ -56,7 +61,7 @@ export function computeAvResult({
     const abattement = duration === '8+' ? ABATTEMENT_ANNUEL[situation] : 0;
     const baseImposable = duration === '8+' ? Math.max(0, gains - abattement) : gains;
     const { gainsTauxReduit, gainsTauxNormal } = repartirGainsAuSeuil(gains, {
-        primesVersees,
+        primesVersees: primes,
         avantReforme,
         duration,
     });
@@ -84,9 +89,9 @@ export function computeAvResult({
         plusValue,
         exonere: false,
         taxIntegration,
-        netIntegration: montantRetire - taxIntegration,
+        netIntegration: rachat - taxIntegration,
         taxForfaitaire,
-        netForfaitaire: montantRetire - taxForfaitaire,
+        netForfaitaire: rachat - taxForfaitaire,
         meilleureOption: taxIntegration <= taxForfaitaire ? 'integration' : 'forfaitaire',
     };
 }
