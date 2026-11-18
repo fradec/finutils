@@ -3,6 +3,11 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "test": "node --test"
+        "test": "node --test",
+        "format": "prettier --write .",
+        "format:check": "prettier --check ."
+    },
+    "devDependencies": {
+        "prettier": "^3.10.1"
     }
 }

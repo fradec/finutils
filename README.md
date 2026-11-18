@@ -14,3 +14,12 @@ Les calculs (`calculations.js`) sont testés avec le test runner intégré de No
 ```
 node --test
 ```
+
+## Formatage
+
+Le code est formaté avec Prettier (dépendance de développement uniquement) :
+
+```
+npm install
+npm run format
+```
