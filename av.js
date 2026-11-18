@@ -18,6 +18,8 @@ export function initAv() {
     const valueAInput = document.getElementById('value-a');
     const valueBInput = document.getElementById('value-b');
     const beforeSep2017Checkbox = document.getElementById('before-sep-2017');
+    const primesAvantReformeField = document.getElementById('primes-avant-reforme-field');
+    const primesAvantReformeInput = document.getElementById('primes-avant-reforme');
     const dateReformeLabelEl = document.getElementById('date-reforme-label');
     const exonerationCheckbox = document.getElementById('exoneration');
     const exonerationLabelEl = document.getElementById('exoneration-label');
@@ -49,6 +51,13 @@ export function initAv() {
     exonerationLabelEl.innerText = `Cas d'exonération d'impôt sur le revenu (${casExoneration})`;
 
     legalLinkAnchor.href = SOURCE_URL;
+
+    // Le montant des primes antérieures à la réforme n'est demandé que si la case correspondante est cochée.
+    function updatePrimesAvantReformeVisibility() {
+        primesAvantReformeField.hidden = !beforeSep2017Checkbox.checked;
+    }
+    beforeSep2017Checkbox.addEventListener('change', updatePrimesAvantReformeVisibility);
+    updatePrimesAvantReformeVisibility();
 
     calculatorForm.addEventListener('input', calculate);
     resetButton.addEventListener('click', resetForm);
@@ -129,17 +138,22 @@ export function initAv() {
         }
 
         const duration = durationSelect.value;
-        const avantReforme = beforeSep2017Checkbox.checked;
+        // Case cochée sans montant : la totalité des primes est réputée antérieure à la réforme.
+        const primesAvantReforme = beforeSep2017Checkbox.checked
+            ? primesAvantReformeInput.value === ''
+                ? primesVersees
+                : parseFloat(primesAvantReformeInput.value) || 0
+            : 0;
         const tmi = parseFloat(document.querySelector('input[name="tmi"]:checked').value) || 0;
         const situation = document.querySelector('input[name="situation"]:checked').value;
         const exonere = exonerationCheckbox.checked;
 
         const result = computeAvResult({
             primesVersees,
+            primesAvantReforme,
             valeurRachat,
             montantRetire,
             duration,
-            avantReforme,
             tmi,
             situation,
             exonere,
@@ -184,6 +198,7 @@ export function initAv() {
         calculatorForm.reset();
         partielFields.hidden = true;
         abattementFields.hidden = true;
+        primesAvantReformeField.hidden = true;
         durationSelect.disabled = false;
         durationAutoNoteEl.innerText = '';
         calculate();

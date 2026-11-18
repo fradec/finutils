@@ -14,7 +14,6 @@ test('rachat en moins-value : non imposable, aucune taxe', () => {
         valeurRachat: 8000,
         montantRetire: 8000,
         duration: '0-4',
-        avantReforme: false,
         tmi: 30,
         situation: 'seul',
         exonere: false,
@@ -31,7 +30,6 @@ test('exonération : seuls les prélèvements sociaux restent dus', () => {
         valeurRachat: 15000,
         montantRetire: 15000,
         duration: '0-4',
-        avantReforme: false,
         tmi: 41,
         situation: 'seul',
         exonere: true,
@@ -48,7 +46,6 @@ test('abattement au-delà de 8 ans, sous le seuil de 150 000 €', () => {
         valeurRachat: 100000,
         montantRetire: 100000,
         duration: '8+',
-        avantReforme: false,
         tmi: 30,
         situation: 'seul',
         exonere: false,
@@ -64,7 +61,6 @@ test('seuil de 150 000 € dépassé après réforme : taux forfaitaire majoré'
         valeurRachat: 250000,
         montantRetire: 250000,
         duration: '8+',
-        avantReforme: false,
         tmi: 0,
         situation: 'couple',
         exonere: false,
@@ -82,7 +78,6 @@ test('seuil de 150 000 € atteint : la totalité des gains reste à 7,5 %', () 
         valeurRachat: 200000,
         montantRetire: 200000,
         duration: '8+',
-        avantReforme: false,
         tmi: 30,
         situation: 'seul',
         exonere: false,
@@ -97,7 +92,6 @@ test("l'abattement s'impute d'abord sur la fraction à 7,5 %, puis sur celle à 
         valeurRachat: 1010000,
         montantRetire: 1010000,
         duration: '8+',
-        avantReforme: false,
         tmi: 30,
         situation: 'seul',
         exonere: false,
@@ -113,7 +107,6 @@ test('rachat avant 8 ans après réforme : 12,8 % sur tous les gains, sans abatt
         valeurRachat: 120000,
         montantRetire: 120000,
         duration: '4-8',
-        avantReforme: false,
         tmi: 41,
         situation: 'couple',
         exonere: false,
@@ -125,10 +118,10 @@ test('rachat avant 8 ans après réforme : 12,8 % sur tous les gains, sans abatt
 test('primes antérieures à la réforme après 8 ans : 7,5 % sur tous les gains, sans seuil', () => {
     const result = computeAvResult({
         primesVersees: 400000,
+        primesAvantReforme: 400000,
         valeurRachat: 500000,
         montantRetire: 500000,
         duration: '8+',
-        avantReforme: true,
         tmi: 30,
         situation: 'seul',
         exonere: false,
@@ -137,13 +130,61 @@ test('primes antérieures à la réforme après 8 ans : 7,5 % sur tous les gains
     assertClose(result.taxForfaitaire, 95400 * 0.075 + 100000 * 0.172);
 });
 
+test('primes réparties entre avant et après la réforme : chaque compartiment suit son régime', () => {
+    const result = computeAvResult({
+        primesVersees: 200000,
+        primesAvantReforme: 100000,
+        valeurRachat: 300000,
+        montantRetire: 300000,
+        duration: '8+',
+        tmi: 30,
+        situation: 'seul',
+        exonere: false,
+    });
+    // gains 100 000, dont 50 000 rattachés aux primes antérieures (7,5 %).
+    // Le seuil résiduel est de 150 000 - 100 000 = 50 000 pour 100 000 de primes post-réforme :
+    // 25 000 de gains à 7,5 %, 25 000 à 12,8 %.
+    // L'abattement de 4 600 s'impute en priorité sur les gains antérieurs.
+    assertClose(result.taxForfaitaire, (45400 + 25000) * 0.075 + 25000 * 0.128 + 100000 * 0.172);
+});
+
+test('le seuil de 150 000 € est diminué des primes antérieures à la réforme', () => {
+    const result = computeAvResult({
+        primesVersees: 250000,
+        primesAvantReforme: 150000,
+        valeurRachat: 500000,
+        montantRetire: 500000,
+        duration: '8+',
+        tmi: 30,
+        situation: 'seul',
+        exonere: false,
+    });
+    // gains 250 000, dont 150 000 antérieurs. Plafond résiduel nul : les 100 000 restants sont à 12,8 %.
+    // L'abattement (4 600) s'impute sur les 150 000 antérieurs, taxés à 7,5 %.
+    assertClose(result.taxForfaitaire, 145400 * 0.075 + 100000 * 0.128 + 250000 * 0.172);
+});
+
+test('primes antérieures à la réforme supérieures au total : plafonnées au total', () => {
+    const result = computeAvResult({
+        primesVersees: 100000,
+        primesAvantReforme: 250000,
+        valeurRachat: 150000,
+        montantRetire: 150000,
+        duration: '8+',
+        tmi: 30,
+        situation: 'seul',
+        exonere: false,
+    });
+    // Tout est réputé antérieur : gains 50 000, abattement 4 600 => 45 400 à 7,5 %.
+    assertClose(result.taxForfaitaire, 45400 * 0.075 + 50000 * 0.172);
+});
+
 test('rachat supérieur à la valeur du contrat : les gains sont plafonnés', () => {
     const result = computeAvResult({
         primesVersees: 100000,
         valeurRachat: 150000,
         montantRetire: 300000,
         duration: '8+',
-        avantReforme: false,
         tmi: 30,
         situation: 'seul',
         exonere: false,
@@ -159,7 +200,6 @@ test('valeur de rachat nulle : aucun gain, aucun NaN', () => {
         valeurRachat: 0,
         montantRetire: 0,
         duration: '0-4',
-        avantReforme: false,
         tmi: 30,
         situation: 'seul',
         exonere: false,
@@ -175,7 +215,6 @@ test('montant retiré négatif : traité comme un rachat nul', () => {
         valeurRachat: 15000,
         montantRetire: -5000,
         duration: '0-4',
-        avantReforme: false,
         tmi: 30,
         situation: 'seul',
         exonere: false,
@@ -186,11 +225,11 @@ test('montant retiré négatif : traité comme un rachat nul', () => {
 
 test('primes versées avant le 27/09/2017 : taux forfaitaire historique', () => {
     const result = computeAvResult({
-        primesVersees: 0,
-        valeurRachat: 10000,
-        montantRetire: 10000,
+        primesVersees: 10000,
+        primesAvantReforme: 10000,
+        valeurRachat: 20000,
+        montantRetire: 20000,
         duration: '4-8',
-        avantReforme: true,
         tmi: 11,
         situation: 'seul',
         exonere: false,
