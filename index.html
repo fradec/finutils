@@ -261,7 +261,9 @@
                                     <span id="financingUnit" aria-hidden="true" hidden>€</span>
                                 </span>
                             </div>
-                            <p class="formula-note">Prix du bien + travaux + frais de notaire - apport.</p>
+                            <p class="formula-note">
+                                Prix du bien + travaux + frais de notaire + frais annexes - apport.
+                            </p>
                         </div>
                         <div class="form-group">
                             <label for="downPayment">Apport (recommandé au moins 10% du prix du bien) :</label>
@@ -297,6 +299,14 @@
                             </div>
                             <p class="formula-note">Calculée sur le capital emprunté initial.</p>
                         </div>
+                        <div class="form-group">
+                            <label for="fees">Frais de dossier et de garantie (optionnel) :</label>
+                            <div class="input-with-suffix">
+                                <input type="number" id="fees" min="0" step="10" />
+                                <span aria-hidden="true">€</span>
+                            </div>
+                            <p class="formula-note">Ajoutés au coût à financer.</p>
+                        </div>
                     </fieldset>
                 </form>
 
@@ -318,6 +328,10 @@
                             <tr>
                                 <th><span id="notaryFeesLabel">Frais de notaire estimés</span></th>
                                 <td><span class="operator">+</span><span id="notaryFees"></span></td>
+                            </tr>
+                            <tr id="resultFeesRow" hidden>
+                                <th>Frais de dossier et de garantie</th>
+                                <td><span class="operator">+</span><span id="resultFees"></span></td>
                             </tr>
                             <tr>
                                 <th><span id="resultDownPaymentLabel">Apport</span></th>
@@ -352,8 +366,8 @@
                         >
                     </p>
                     <p class="assumption-note">
-                        Assurance emprunteur calculée sur le capital initial. Simulation indicative, hors frais de
-                        dossier et de garantie.
+                        Assurance emprunteur calculée sur le capital initial. Les frais de dossier et de garantie saisis
+                        sont intégrés au coût à financer.
                     </p>
                 </div>
             </section>

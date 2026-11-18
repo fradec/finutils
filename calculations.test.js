@@ -316,6 +316,25 @@ test("assurance emprunteur : s'ajoute aux intérêts du crédit", () => {
     assert.ok(loan.monthlyPaymentWithInsurance > loan.monthlyPayment);
 });
 
+test('frais de dossier et de garantie : intégrés au coût à financer', () => {
+    const loan = computeLoan({
+        price: 200000,
+        works: 0,
+        downPayment: 20000,
+        rate: 0,
+        durationYears: 20,
+        isNew: 'ancien',
+        fees: 1500,
+        insuranceRate: 0.3,
+    });
+    assert.equal(loan.totalCost, 217500);
+    assert.equal(loan.loanAmount, 197500);
+    assertClose(loan.monthlyPayment, 197500 / 240);
+    assertClose(loan.monthlyInsurance, 49.375);
+    assertClose(loan.insuranceCost, 11850);
+    assertClose(loan.totalCostWithCredit, 229350);
+});
+
 test('entrées négatives : ramenées à zéro', () => {
     const loan = computeLoan({
         price: -100000,
@@ -325,8 +344,10 @@ test('entrées négatives : ramenées à zéro', () => {
         durationYears: -5,
         isNew: 'neuf',
         insuranceRate: -0.5,
+        fees: -2000,
     });
     assert.equal(loan.notaryFees, 0);
+    assert.equal(loan.fees, 0);
     assert.equal(loan.totalCost, 0);
     assert.equal(loan.loanAmount, 0);
     assert.equal(loan.downPaymentRate, 0);

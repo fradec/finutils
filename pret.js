@@ -14,6 +14,7 @@ export function initPret() {
     const financingUnit = document.getElementById('financingUnit');
     const rateInput = document.getElementById('rate');
     const insuranceRateInput = document.getElementById('insuranceRate');
+    const feesInput = document.getElementById('fees');
     const durationInput = document.getElementById('duration');
     const durationValue = document.getElementById('durationValue');
     const warningEl = document.getElementById('warning');
@@ -23,6 +24,8 @@ export function initPret() {
     const resultPriceEl = document.getElementById('resultPrice');
     const resultWorksRow = document.getElementById('resultWorksRow');
     const resultWorksEl = document.getElementById('resultWorks');
+    const resultFeesRow = document.getElementById('resultFeesRow');
+    const resultFeesEl = document.getElementById('resultFees');
     const notaryFeesEl = document.getElementById('notaryFees');
     const notaryFeesLabelEl = document.getElementById('notaryFeesLabel');
     const resultDownPaymentEl = document.getElementById('resultDownPayment');
@@ -49,6 +52,7 @@ export function initPret() {
         const sanitizedDownPayment = Math.max(Number(downPaymentInput.value) || 0, 0);
         const sanitizedRate = Math.max(Number(rateInput.value) || 0, 0);
         const sanitizedInsuranceRate = Math.max(Number(insuranceRateInput.value) || 0, 0);
+        const sanitizedFees = Math.max(Number(feesInput.value) || 0, 0);
         const sanitizedDuration = Math.min(Math.max(Number(durationInput.value) || 1, 1), 25);
         durationValue.value = `${sanitizedDuration} an${sanitizedDuration > 1 ? 's' : ''}`;
 
@@ -63,6 +67,7 @@ export function initPret() {
                   durationYears: sanitizedDuration,
                   isNew: isNewValue,
                   insuranceRate: sanitizedInsuranceRate,
+                  fees: sanitizedFees,
               })
             : null;
         const hasInsurance = loan ? loan.insuranceCost > 0 : false;
@@ -101,6 +106,8 @@ export function initPret() {
         resultPriceEl.textContent = formatEUR(sanitizedPrice);
         resultWorksRow.hidden = sanitizedWorks === 0;
         resultWorksEl.textContent = formatEUR(sanitizedWorks);
+        resultFeesRow.hidden = sanitizedFees === 0;
+        resultFeesEl.textContent = formatEUR(sanitizedFees);
         document.querySelectorAll('#tab-pret .results-table tbody tr').forEach((row) => {
             row.classList.remove('stripe-odd', 'stripe-even');
         });
@@ -138,7 +145,7 @@ export function initPret() {
         calculate();
     });
 
-    [worksInput, rateInput, insuranceRateInput, durationInput].forEach((el) => {
+    [worksInput, rateInput, insuranceRateInput, feesInput, durationInput].forEach((el) => {
         el.addEventListener('input', calculate);
     });
 
